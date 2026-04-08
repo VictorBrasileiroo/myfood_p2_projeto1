@@ -35,4 +35,8 @@ public class Facade {
         return this.userManager.login(email, senha);
     }
 
+    public void encerrarSistema() {
+        // fazer depois -> só para parar de cair no erro -> persistência xml
+    }
+
 }

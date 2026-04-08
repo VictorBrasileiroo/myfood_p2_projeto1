@@ -22,12 +22,12 @@ public class Facade {
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco)
-            throws UsuarioJaExisteException {
+            throws Exception {
         criarUsuario(nome, email, senha, endereco, null);
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf)
-            throws UsuarioJaExisteException {
+            throws Exception {
         this.userManager.criarUsuario(nome, email, senha, endereco, cpf);
     }
 

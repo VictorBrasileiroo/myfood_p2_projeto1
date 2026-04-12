@@ -23,7 +23,7 @@ public class Facade {
 
     public void criarUsuario(String nome, String email, String senha, String endereco)
             throws Exception {
-        criarUsuario(nome, email, senha, endereco, null);
+        this.userManager.criarUsuario(nome, email, senha, endereco);
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf)
@@ -31,7 +31,7 @@ public class Facade {
         this.userManager.criarUsuario(nome, email, senha, endereco, cpf);
     }
 
-    public String login(String email, String senha) {
+    public String login(String email, String senha) throws Exception {
         return this.userManager.login(email, senha);
     }
 

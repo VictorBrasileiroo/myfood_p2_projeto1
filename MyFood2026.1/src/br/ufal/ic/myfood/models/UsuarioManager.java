@@ -13,7 +13,34 @@ public class UsuarioManager {
         this.usuarioList = new ArrayList<Usuario>();
     }
 
+    public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {
+        validarCamposBasicos(nome, email, senha, endereco);
+        validarEmailDuplicado(email);
+
+        if (!email.contains("@")) {
+            throw new EmailInvalidoException();
+        }
+
+        this.usuarioList.add(new Usuario(nome, email, senha, endereco, null));
+    }
+
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf) throws Exception {
+        validarCamposBasicos(nome, email, senha, endereco);
+
+        if (!isValidCpf(cpf)) {
+            throw new CpfInvalidoException();
+        }
+
+        validarEmailDuplicado(email);
+
+        if (!email.contains("@")) {
+            throw new EmailInvalidoException();
+        }
+
+        this.usuarioList.add(new Usuario(nome, email, senha, endereco, cpf));
+    }
+
+    private void validarCamposBasicos(String nome, String email, String senha, String endereco) throws Exception {
         if (nome == null || nome.trim().isEmpty()) {
             throw new NomeInvalidoException();
         }
@@ -29,22 +56,14 @@ public class UsuarioManager {
         if (endereco == null || endereco.trim().isEmpty()) {
             throw new EnderecoInvalidoException();
         }
+    }
 
-        if (cpf != null && !isValidCpf(cpf)) {
-            throw new CpfInvalidoException();
-        }
-
+    private void validarEmailDuplicado(String email) throws UsuarioJaExisteException {
         for (Usuario usuario : this.usuarioList) {
             if (usuario.getEmail() != null && usuario.getEmail().equals(email)) {
                 throw new UsuarioJaExisteException();
             }
         }
-
-        if (!email.contains("@")) {
-            throw new EmailInvalidoException();
-        }
-
-        this.usuarioList.add(new Usuario(nome, email, senha, endereco, cpf));
     }
 
     private boolean isValidCpf(String cpf) {
@@ -77,15 +96,19 @@ public class UsuarioManager {
         throw new UsuarioNaoExisteException();
     }
 
-    public String login(String email, String senha) {
+    public String login(String email, String senha) throws LoginSenhaInvalidosException {
+        if(email == null || email.trim().isEmpty() || senha == null || senha.trim().isEmpty()) {
+            throw new LoginSenhaInvalidosException();
+        }
+
         for (Usuario usuario : this.usuarioList) {
-            if (usuario.getEmail().equals(email)) {
-                if (usuario.getSenha().equals(senha)) {
+            if (usuario.getEmail() != null && usuario.getEmail().equals(email)) {
+                if (usuario.getSenha() != null && usuario.getSenha().equals(senha)) {
                     return usuario.getId();
                 }
             }
         }
-        return null;
+        throw new LoginSenhaInvalidosException();
     }
 
 }

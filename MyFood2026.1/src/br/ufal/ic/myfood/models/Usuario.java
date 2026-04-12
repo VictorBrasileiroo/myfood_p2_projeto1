@@ -1,8 +1,11 @@
 package br.ufal.ic.myfood.models;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Usuario {
+public class Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private String nome;
     private String email;

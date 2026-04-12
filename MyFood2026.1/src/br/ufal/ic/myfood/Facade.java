@@ -12,6 +12,15 @@ public class Facade {
 
     UsuarioManager userManager;
 
+    public Facade() {
+        this.userManager = new UsuarioManager();
+        try {
+            this.userManager.carregarDados();
+        } catch (Exception e) {
+            // vazio para manter exceptions na facade
+        }
+    }
+
 
     public void zerarSistema() {
         this.userManager = new UsuarioManager();
@@ -36,7 +45,11 @@ public class Facade {
     }
 
     public void encerrarSistema() {
-        // fazer depois -> só para parar de cair no erro -> persistência xml
+        try {
+            this.userManager.salvarDados();
+        } catch (Exception e) {
+            // vazio para manter exceptions na facade
+        }
     }
 
 }

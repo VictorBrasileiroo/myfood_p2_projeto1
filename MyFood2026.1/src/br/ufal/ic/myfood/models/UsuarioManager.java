@@ -2,15 +2,51 @@ package br.ufal.ic.myfood.models;
 
 import br.ufal.ic.myfood.exceptions.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioManager {
 
+    private static final String ARQUIVO_USUARIOS = "dados_usuarios.dat";
+
     List<Usuario> usuarioList;
 
     public UsuarioManager() {
         this.usuarioList = new ArrayList<Usuario>();
+    }
+
+    public void salvarDados() throws IOException {
+        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(ARQUIVO_USUARIOS))) {
+            output.writeObject(this.usuarioList);
+        }
+    }
+
+    public void carregarDados() throws IOException, ClassNotFoundException {
+        File arquivo = new File(ARQUIVO_USUARIOS);
+        if (!arquivo.exists()) {
+            return;
+        }
+
+        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(arquivo))) {
+            Object dadosLidos = input.readObject();
+
+            if (!(dadosLidos instanceof List<?>)) {
+                throw new IOException("Formato de dados invalido.");
+            }
+
+            List<?> listaLida = (List<?>) dadosLidos;
+            List<Usuario> usuariosCarregados = new ArrayList<Usuario>();
+
+            for (Object item : listaLida) {
+                if (!(item instanceof Usuario)) {
+                    throw new IOException("Formato de dados invalido.");
+                }
+                usuariosCarregados.add((Usuario) item);
+            }
+
+            this.usuarioList = usuariosCarregados;
+        }
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {

@@ -1,0 +1,42 @@
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+### Java ###
+*.class
+hs_err_pid*
+replay_pid*
+
+### Build directories ###
+build/
+target/
+
+### VS Code ###
+.vscode/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Runtime data ###
+dados_usuarios.dat

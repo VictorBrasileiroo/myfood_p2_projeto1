@@ -1,29 +1,32 @@
 package br.ufal.ic.myfood.models;
 
 import java.io.Serializable;
-import java.util.UUID;
 
-public class Usuario implements Serializable {
+public abstract class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String id;
+    private int id;
     private String nome;
     private String email;
     private String senha;
     private String endereco;
-    private String cpf;
 
-    public Usuario(String nome, String email, String senha, String endereco) {
-        this(nome, email, senha, endereco, null);
-    }
+    public Usuario() {}
 
-    public Usuario(String nome, String email, String senha, String endereco, String cpf) {
+    public Usuario(int id, String nome, String email, String senha, String endereco) {
+        this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.endereco = endereco;
-        this.cpf = cpf;
-        this.id = UUID.randomUUID().toString();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -58,19 +61,5 @@ public class Usuario implements Serializable {
         this.endereco = endereco;
     }
 
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    public abstract String getTipo();
 }

@@ -1,28 +1,54 @@
 package br.ufal.ic.myfood.models;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmpresaManager {
 
-    private final List<Empresa> empresas;
-    private int proximoId;
-    private final UsuarioManager usuarioManager;
+    private static final String ARQUIVO_EMPRESAS = "dados/empresas.xml";
+
+    private List<Empresa> empresas = new ArrayList<>();
+    private int proximoId = 1;
+    private UsuarioManager usuarioManager;
 
     public EmpresaManager(UsuarioManager usuarioManager) {
-        this.empresas = new ArrayList<>();
-        this.proximoId = 1;
         this.usuarioManager = usuarioManager;
+    }
+
+    public void salvarDados() throws IOException {
+        File dir = new File("dados");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        try (XMLEncoder encoder = new XMLEncoder(new FileOutputStream(ARQUIVO_EMPRESAS))) {
+            encoder.writeObject(this.proximoId);
+            encoder.writeObject(this.empresas);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void carregarDados() throws IOException {
+        File arquivo = new File(ARQUIVO_EMPRESAS);
+        if (!arquivo.exists()) {
+            return;
+        }
+
+        try (XMLDecoder decoder = new XMLDecoder(new FileInputStream(arquivo))) {
+            this.proximoId = (int) decoder.readObject();
+            this.empresas = (List<Empresa>) decoder.readObject();
+        }
     }
 
     public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) {
         int id = this.proximoId++;
-
-        if (tipoEmpresa != null && tipoEmpresa.trim().equalsIgnoreCase("restaurante")) {
-            this.empresas.add(new Restaurante(id, nome, endereco, dono, tipoCozinha));
-        } else {
-            this.empresas.add(new Restaurante(id, nome, endereco, dono, tipoCozinha));
-        }
+        this.empresas.add(new Restaurante(id, nome, endereco, dono, tipoCozinha));
 
         return id;
     }
@@ -57,26 +83,26 @@ public class EmpresaManager {
         return resultado.toString();
     }
 
-    public String getAtributoEmpresa(int idEmpresa, String atributo) throws Exception {
-        Empresa empresa = buscarPorId(idEmpresa);
-        if (empresa == null) {
+    public String getAtributoEmpresa(int empresa, String atributo) throws Exception {
+        Empresa empresaEncontrada = buscarPorId(empresa);
+        if (empresaEncontrada == null) {
             return "";
         }
 
         if ("nome".equals(atributo)) {
-            return empresa.getNome();
+            return empresaEncontrada.getNome();
         }
 
         if ("endereco".equals(atributo)) {
-            return empresa.getEndereco();
+            return empresaEncontrada.getEndereco();
         }
 
-        if ("tipoCozinha".equals(atributo) && empresa instanceof Restaurante) {
-            return ((Restaurante) empresa).getTipoCozinha();
+        if ("tipoCozinha".equals(atributo) && empresaEncontrada instanceof Restaurante) {
+            return ((Restaurante) empresaEncontrada).getTipoCozinha();
         }
 
         if ("dono".equals(atributo)) {
-            Usuario dono = this.usuarioManager.buscarPorId(empresa.getDonoId());
+            Usuario dono = this.usuarioManager.buscarPorId(empresaEncontrada.getDonoId());
             return dono.getNome();
         }
 
@@ -103,5 +129,22 @@ public class EmpresaManager {
             }
         }
         return null;
+    }
+
+    public List<Empresa> getEmpresas() {
+        return empresas;
+    }
+
+    public int getProximoId() {
+        return proximoId;
+    }
+
+    public void setUsuarioManager(UsuarioManager usuarioManager) {
+        this.usuarioManager = usuarioManager;
+    }
+
+    public void zerarDados() {
+        this.empresas = new ArrayList<>();
+        this.proximoId = 1;
     }
 }

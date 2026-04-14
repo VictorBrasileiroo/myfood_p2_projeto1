@@ -1,5 +1,15 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.AtributoInvalidoExc;
+import br.ufal.ic.myfood.exceptions.EmpresaComNomeJaExisteException;
+import br.ufal.ic.myfood.exceptions.EmpresaNaoCadastradaException;
+import br.ufal.ic.myfood.exceptions.EmpresaNomeELocalRepetidosException;
+import br.ufal.ic.myfood.exceptions.IndiceInvalidoException;
+import br.ufal.ic.myfood.exceptions.IndiceMaiorQueEsperadoException;
+import br.ufal.ic.myfood.exceptions.NaoExisteEmpresaComEsseNomeException;
+import br.ufal.ic.myfood.exceptions.NomeInvalidoException;
+import br.ufal.ic.myfood.exceptions.UsuarioNaoPodeCriarEmpresaException;
+
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.File;
@@ -8,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EmpresaManager {
 
@@ -46,80 +57,122 @@ public class EmpresaManager {
         }
     }
 
-    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) {
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) throws Exception {
+        validarUsuarioDono(dono);
+
+        for (Empresa empresa : this.empresas) {
+            if (empresa.getDonoId() == dono
+                    && Objects.equals(empresa.getNome(), nome)
+                    && Objects.equals(empresa.getEndereco(), endereco)) {
+                throw new EmpresaNomeELocalRepetidosException();
+            }
+        }
+
+        for (Empresa empresa : this.empresas) {
+            if (empresa.getDonoId() != dono && Objects.equals(empresa.getNome(), nome)) {
+                throw new EmpresaComNomeJaExisteException();
+            }
+        }
+
         int id = this.proximoId++;
         this.empresas.add(new Restaurante(id, nome, endereco, dono, tipoCozinha));
 
         return id;
     }
 
-    public String getEmpresasDoUsuario(int idDono) {
-        StringBuilder resultado = new StringBuilder("{");
-        boolean primeira = true;
+    public String getEmpresasDoUsuario(int idDono) throws Exception {
+        validarUsuarioDono(idDono);
 
+        List<Empresa> empresasDoDono = new ArrayList<>();
         for (Empresa empresa : this.empresas) {
             if (empresa.getDonoId() == idDono) {
-                if (primeira) {
-                    resultado.append("[");
-                    primeira = false;
-                } else {
-                    resultado.append(", ");
-                }
-                resultado.append("[")
-                        .append(empresa.getNome())
-                        .append(", ")
-                        .append(empresa.getEndereco())
-                        .append("]");
+                empresasDoDono.add(empresa);
             }
         }
 
-        if (primeira) {
-            resultado.append("[]");
-        } else {
-            resultado.append("]");
+        if (empresasDoDono.isEmpty()) {
+            return "{[]}";
         }
 
-        resultado.append("}");
+        StringBuilder resultado = new StringBuilder("{[");
+        for (int i = 0; i < empresasDoDono.size(); i++) {
+            Empresa empresa = empresasDoDono.get(i);
+            resultado.append("[")
+                    .append(empresa.getNome())
+                    .append(", ")
+                    .append(empresa.getEndereco())
+                    .append("]");
+
+            if (i < empresasDoDono.size() - 1) {
+                resultado.append(", ");
+            }
+        }
+        resultado.append("]}");
         return resultado.toString();
     }
 
     public String getAtributoEmpresa(int empresa, String atributo) throws Exception {
         Empresa empresaEncontrada = buscarPorId(empresa);
         if (empresaEncontrada == null) {
-            return "";
+            throw new EmpresaNaoCadastradaException();
         }
 
-        if ("nome".equals(atributo)) {
+        if (atributo == null || atributo.trim().isEmpty()) {
+            throw new AtributoInvalidoExc();
+        }
+
+        String atributoNormalizado = atributo.trim();
+
+        if ("nome".equals(atributoNormalizado)) {
             return empresaEncontrada.getNome();
         }
 
-        if ("endereco".equals(atributo)) {
+        if ("endereco".equals(atributoNormalizado)) {
             return empresaEncontrada.getEndereco();
         }
 
-        if ("tipoCozinha".equals(atributo) && empresaEncontrada instanceof Restaurante) {
-            return ((Restaurante) empresaEncontrada).getTipoCozinha();
+        if ("tipoCozinha".equals(atributoNormalizado)) {
+            if (empresaEncontrada instanceof Restaurante) {
+                return ((Restaurante) empresaEncontrada).getTipoCozinha();
+            }
+            throw new AtributoInvalidoExc();
         }
 
-        if ("dono".equals(atributo)) {
+        if ("dono".equals(atributoNormalizado)) {
             Usuario dono = this.usuarioManager.buscarPorId(empresaEncontrada.getDonoId());
             return dono.getNome();
         }
 
-        return "";
+        throw new AtributoInvalidoExc();
     }
 
-    public int getIdEmpresa(int idDono, String nome, int indice) {
-        int contador = 0;
+    public int getIdEmpresa(int idDono, String nome, int indice) throws Exception {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new NomeInvalidoException();
+        }
+
+        if (indice < 0) {
+            throw new IndiceInvalidoException();
+        }
+
+        validarUsuarioDono(idDono);
+
+        List<Empresa> empresasComMesmoNome = new ArrayList<>();
         for (Empresa empresa : this.empresas) {
-            if (empresa.getDonoId() == idDono && nome != null && nome.equals(empresa.getNome())) {
-                if (contador == indice) {
-                    return empresa.getId();
-                }
-                contador++;
+            if (empresa.getDonoId() == idDono && nome.equals(empresa.getNome())) {
+                empresasComMesmoNome.add(empresa);
             }
         }
-        return -1;
+
+        if (empresasComMesmoNome.isEmpty()) {
+            throw new NaoExisteEmpresaComEsseNomeException();
+        }
+
+        if (indice >= empresasComMesmoNome.size()) {
+            throw new IndiceMaiorQueEsperadoException();
+        }
+
+        return empresasComMesmoNome.get(indice).getId();
     }
 
     public Empresa buscarPorId(int id) {
@@ -146,5 +199,11 @@ public class EmpresaManager {
     public void zerarDados() {
         this.empresas = new ArrayList<>();
         this.proximoId = 1;
+    }
+
+    private void validarUsuarioDono(int idUsuario) throws UsuarioNaoPodeCriarEmpresaException {
+        if (!this.usuarioManager.ehDonoDeEmpresa(idUsuario)) {
+            throw new UsuarioNaoPodeCriarEmpresaException();
+        }
     }
 }

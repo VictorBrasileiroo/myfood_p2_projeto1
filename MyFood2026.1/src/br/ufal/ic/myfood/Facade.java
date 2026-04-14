@@ -15,6 +15,10 @@ public class Facade {
             this.userManager.carregarDados();
         } catch (Exception e) {
         }
+        try {
+            this.empresaManager.carregarDados();
+        } catch (Exception e) {
+        }
     }
 
     public void zerarSistema() {
@@ -25,6 +29,10 @@ public class Facade {
     public void encerrarSistema() {
         try {
             this.userManager.salvarDados();
+        } catch (Exception e) {
+        }
+        try {
+            this.empresaManager.salvarDados();
         } catch (Exception e) {
         }
     }

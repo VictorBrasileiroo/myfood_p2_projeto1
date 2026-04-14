@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="25" class="java.beans.XMLDecoder">
- <int>3</int>
+ <int>4</int>
  <object class="java.util.ArrayList">
   <void method="add">
    <object class="br.ufal.ic.myfood.models.Cliente">
     <void property="email">
-     <string>carlos@ufal.com.br</string>
+     <string>lucas@ufal.com.br</string>
     </void>
     <void property="endereco">
-     <string>Rua Exemplo N 123</string>
+     <string>Rua Exemplo N 321</string>
     </void>
     <void property="id">
      <int>1</int>
     </void>
     <void property="nome">
-     <string>Carlos</string>
+     <string>Lucas</string>
     </void>
     <void property="senha">
      <string>123senha</string>
@@ -27,7 +27,7 @@
      <string>544.732.410-68</string>
     </void>
     <void property="email">
-     <string>carlos2@ufal.com.br</string>
+     <string>carlos@ufal.com.br</string>
     </void>
     <void property="endereco">
      <string>Rua Exemplo N 321</string>
@@ -37,6 +37,28 @@
     </void>
     <void property="nome">
      <string>CarlosDono</string>
+    </void>
+    <void property="senha">
+     <string>123senha</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="br.ufal.ic.myfood.models.DonoDeEmpresa">
+    <void property="cpf">
+     <string>544.732.410-68</string>
+    </void>
+    <void property="email">
+     <string>roberto@ufal.com.br</string>
+    </void>
+    <void property="endereco">
+     <string>Rua Exemplo N 321</string>
+    </void>
+    <void property="id">
+     <int>3</int>
+    </void>
+    <void property="nome">
+     <string>RobertoDono</string>
     </void>
     <void property="senha">
      <string>123senha</string>

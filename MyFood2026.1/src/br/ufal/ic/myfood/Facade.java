@@ -1,13 +1,16 @@
 package br.ufal.ic.myfood;
 
+import br.ufal.ic.myfood.models.EmpresaManager;
 import br.ufal.ic.myfood.models.UsuarioManager;
 
 public class Facade {
 
     private UsuarioManager userManager;
+    private EmpresaManager empresaManager;
 
     public Facade() {
         this.userManager = new UsuarioManager();
+        this.empresaManager = new EmpresaManager(this.userManager);
         try {
             this.userManager.carregarDados();
         } catch (Exception e) {
@@ -16,6 +19,7 @@ public class Facade {
 
     public void zerarSistema() {
         this.userManager = new UsuarioManager();
+        this.empresaManager = new EmpresaManager(this.userManager);
     }
 
     public void encerrarSistema() {
@@ -39,5 +43,21 @@ public class Facade {
 
     public String getAtributoUsuario(String id, String atributo) throws Exception {
         return userManager.getAtributoUsuario(id, atributo);
+    }
+
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) throws Exception {
+        return empresaManager.criarEmpresa(tipoEmpresa, dono, nome, endereco, tipoCozinha);
+    }
+
+    public String getEmpresasDoUsuario(int idDono) throws Exception {
+        return empresaManager.getEmpresasDoUsuario(idDono);
+    }
+
+    public String getAtributoEmpresa(int empresa, String atributo) throws Exception {
+        return empresaManager.getAtributoEmpresa(empresa, atributo);
+    }
+
+    public int getIdEmpresa(int idDono, String nome, int indice) throws Exception {
+        return empresaManager.getIdEmpresa(idDono, nome, indice);
     }
 }

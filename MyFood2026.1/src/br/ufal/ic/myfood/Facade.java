@@ -1,71 +1,68 @@
 package br.ufal.ic.myfood;
 
-import br.ufal.ic.myfood.models.EmpresaManager;
-import br.ufal.ic.myfood.models.UsuarioManager;
+import br.ufal.ic.myfood.repositories.EmpresaRepository;
+import br.ufal.ic.myfood.repositories.UsuarioRepository;
+import br.ufal.ic.myfood.services.EmpresaService;
+import br.ufal.ic.myfood.services.UsuarioService;
 
 public class Facade {
 
-    private UsuarioManager userManager;
-    private EmpresaManager empresaManager;
+    private UsuarioService usuarioService;
+    private EmpresaService empresaService;
 
     public Facade() {
-        this.userManager = new UsuarioManager();
-        this.empresaManager = new EmpresaManager(this.userManager);
-        try {
-            this.userManager.carregarDados();
-        } catch (Exception e) {
-        }
-        try {
-            this.empresaManager.carregarDados();
-        } catch (Exception e) {
-        }
+        UsuarioRepository usuarioRepo = new UsuarioRepository();
+        this.usuarioService = new UsuarioService(usuarioRepo);
+
+        EmpresaRepository empresaRepo = new EmpresaRepository();
+        this.empresaService = new EmpresaService(empresaRepo, this.usuarioService);
+
+        try { usuarioRepo.carregarDados(); } catch (Exception e) {}
+        try { empresaRepo.carregarDados(); } catch (Exception e) {}
     }
 
     public void zerarSistema() {
-        this.userManager = new UsuarioManager();
-        this.empresaManager = new EmpresaManager(this.userManager);
+        UsuarioRepository usuarioRepo = new UsuarioRepository();
+        this.usuarioService = new UsuarioService(usuarioRepo);
+
+        EmpresaRepository empresaRepo = new EmpresaRepository();
+        this.empresaService = new EmpresaService(empresaRepo, this.usuarioService);
     }
 
     public void encerrarSistema() {
-        try {
-            this.userManager.salvarDados();
-        } catch (Exception e) {
-        }
-        try {
-            this.empresaManager.salvarDados();
-        } catch (Exception e) {
-        }
+        try { usuarioService.salvarDados(); } catch (Exception e) {}
+        try { empresaService.salvarDados(); } catch (Exception e) {}
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {
-        userManager.criarUsuario(nome, email, senha, endereco);
+        usuarioService.criarUsuario(nome, email, senha, endereco);
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf) throws Exception {
-        userManager.criarUsuario(nome, email, senha, endereco, cpf);
+        usuarioService.criarUsuario(nome, email, senha, endereco, cpf);
     }
 
     public int login(String email, String senha) throws Exception {
-        return userManager.login(email, senha);
+        return usuarioService.login(email, senha);
     }
 
     public String getAtributoUsuario(String id, String atributo) throws Exception {
-        return userManager.getAtributoUsuario(id, atributo);
+        return usuarioService.getAtributoUsuario(id, atributo);
     }
 
     public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) throws Exception {
-        return empresaManager.criarEmpresa(tipoEmpresa, dono, nome, endereco, tipoCozinha);
+        return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, tipoCozinha);
     }
 
     public String getEmpresasDoUsuario(int idDono) throws Exception {
-        return empresaManager.getEmpresasDoUsuario(idDono);
+        return empresaService.getEmpresasDoUsuario(idDono);
     }
 
     public String getAtributoEmpresa(int empresa, String atributo) throws Exception {
-        return empresaManager.getAtributoEmpresa(empresa, atributo);
+        return empresaService.getAtributoEmpresa(empresa, atributo);
     }
 
     public int getIdEmpresa(int idDono, String nome, int indice) throws Exception {
-        return empresaManager.getIdEmpresa(idDono, nome, indice);
+        return empresaService.getIdEmpresa(idDono, nome, indice);
     }
 }

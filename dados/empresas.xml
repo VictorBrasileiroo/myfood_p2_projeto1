@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="25" class="java.beans.XMLDecoder">
- <int>4</int>
+ <int>5</int>
  <object class="java.util.ArrayList">
   <void method="add">
    <object class="br.ufal.ic.myfood.models.Restaurante">
     <void property="donoId">
-     <int>1</int>
+     <int>2</int>
     </void>
     <void property="endereco">
      <string>Rua Segura N 987</string>
@@ -14,7 +14,7 @@
      <int>1</int>
     </void>
     <void property="nome">
-     <string>Sorveteria do Roberto</string>
+     <string>Pastelaria do Carlos</string>
     </void>
     <void property="tipoCozinha">
      <string>brasileira</string>
@@ -24,16 +24,35 @@
   <void method="add">
    <object class="br.ufal.ic.myfood.models.Restaurante">
     <void property="donoId">
-     <int>1</int>
+     <int>2</int>
     </void>
     <void property="endereco">
-     <string>Rua Segura N 987</string>
+     <string>Rua Legal N 654</string>
     </void>
     <void property="id">
      <int>2</int>
     </void>
     <void property="nome">
-     <string>Pastelaria do Roberto</string>
+     <string>Sushi do Carlos</string>
+    </void>
+    <void property="tipoCozinha">
+     <string>japonesa</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="br.ufal.ic.myfood.models.Restaurante">
+    <void property="donoId">
+     <int>2</int>
+    </void>
+    <void property="endereco">
+     <string>Rua Divertida N 1973</string>
+    </void>
+    <void property="id">
+     <int>3</int>
+    </void>
+    <void property="nome">
+     <string>Pastelaria do Carlos</string>
     </void>
     <void property="tipoCozinha">
      <string>brasileira</string>
@@ -43,16 +62,16 @@
   <void method="add">
    <object class="br.ufal.ic.myfood.models.Restaurante">
     <void property="donoId">
-     <int>1</int>
+     <int>3</int>
     </void>
     <void property="endereco">
      <string>Rua Segura N 987</string>
     </void>
     <void property="id">
-     <int>3</int>
+     <int>4</int>
     </void>
     <void property="nome">
-     <string>Churrascaria do Roberto</string>
+     <string>Sorveteria do Roberto</string>
     </void>
     <void property="tipoCozinha">
      <string>brasileira</string>

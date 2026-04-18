@@ -56,7 +56,6 @@ public class Facade {
         try { pedidoService.salvarDados(); } catch (Exception e) {}
     }
 
-    // US1
     public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {
         usuarioService.criarUsuario(nome, email, senha, endereco);
     }
@@ -73,7 +72,6 @@ public class Facade {
         return usuarioService.getAtributoUsuario(id, atributo);
     }
 
-    // US2
     public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) throws Exception {
         return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, tipoCozinha);
     }
@@ -90,7 +88,6 @@ public class Facade {
         return empresaService.getIdEmpresa(idDono, nome, indice);
     }
 
-    // US3
     public int criarProduto(int empresa, String nome, double valor, String categoria) throws Exception {
         return produtoService.criarProduto(empresa, nome, valor, categoria);
     }
@@ -107,7 +104,6 @@ public class Facade {
         return produtoService.listarProdutos(empresa);
     }
 
-    // US4
     public int criarPedido(int cliente, int empresa) throws Exception {
         return pedidoService.criarPedido(cliente, empresa);
     }

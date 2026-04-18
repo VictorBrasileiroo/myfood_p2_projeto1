@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="25" class="java.beans.XMLDecoder">
- <int>2</int>
+ <int>3</int>
  <object class="java.util.ArrayList">
   <void method="add">
    <object class="br.ufal.ic.myfood.models.DonoDeEmpresa">
@@ -18,6 +18,25 @@
     </void>
     <void property="nome">
      <string>RobertoDono</string>
+    </void>
+    <void property="senha">
+     <string>123senha</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="br.ufal.ic.myfood.models.Cliente">
+    <void property="email">
+     <string>carlos@ufal.com.br</string>
+    </void>
+    <void property="endereco">
+     <string>Rua Exemplo N 123</string>
+    </void>
+    <void property="id">
+     <int>2</int>
+    </void>
+    <void property="nome">
+     <string>Carlos</string>
     </void>
     <void property="senha">
      <string>123senha</string>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="25" class="java.beans.XMLDecoder">
+ <int>4</int>
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="br.ufal.ic.myfood.models.Pedido" id="Pedido0">
+    <void property="clienteId">
+     <int>2</int>
+    </void>
+    <void property="empresaId">
+     <int>1</int>
+    </void>
+    <void property="estado">
+     <string>preparando</string>
+    </void>
+    <void property="numero">
+     <int>1</int>
+    </void>
+    <void property="produtosIds">
+     <void method="add">
+      <int>1</int>
+     </void>
+     <void method="add">
+      <int>2</int>
+     </void>
+     <void method="add">
+      <int>3</int>
+     </void>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="br.ufal.ic.myfood.models.Pedido" id="Pedido1">
+    <void property="clienteId">
+     <int>2</int>
+    </void>
+    <void property="empresaId">
+     <int>2</int>
+    </void>
+    <void property="estado">
+     <string>aberto</string>
+    </void>
+    <void property="numero">
+     <int>2</int>
+    </void>
+    <void property="produtosIds">
+     <void method="add">
+      <int>4</int>
+     </void>
+     <void method="add">
+      <int>4</int>
+     </void>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="br.ufal.ic.myfood.models.Pedido">
+    <void property="clienteId">
+     <int>2</int>
+    </void>
+    <void property="empresaId">
+     <int>1</int>
+    </void>
+    <void property="estado">
+     <string>aberto</string>
+    </void>
+    <void property="numero">
+     <int>3</int>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

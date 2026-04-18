@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <java version="25" class="java.beans.XMLDecoder">
- <int>4</int>
+ <int>3</int>
  <object class="java.util.ArrayList">
   <void method="add">
    <object class="br.ufal.ic.myfood.models.Restaurante">
@@ -34,25 +34,6 @@
     </void>
     <void property="nome">
      <string>Pastelaria do Roberto</string>
-    </void>
-    <void property="tipoCozinha">
-     <string>brasileira</string>
-    </void>
-   </object>
-  </void>
-  <void method="add">
-   <object class="br.ufal.ic.myfood.models.Restaurante">
-    <void property="donoId">
-     <int>1</int>
-    </void>
-    <void property="endereco">
-     <string>Rua Segura N 987</string>
-    </void>
-    <void property="id">
-     <int>3</int>
-    </void>
-    <void property="nome">
-     <string>Churrascaria do Roberto</string>
     </void>
     <void property="tipoCozinha">
      <string>brasileira</string>

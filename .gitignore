@@ -40,3 +40,4 @@ Thumbs.db
 
 ### Runtime data ###
 dados_usuarios.dat
+dados/*.xml

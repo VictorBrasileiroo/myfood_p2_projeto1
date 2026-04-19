@@ -16,10 +16,9 @@ O código-fonte fica dentro da subpasta `MyFood2026.1/`. Ao abrir na IDE, aponte
 - IntelliJ IDEA ou outra IDE Java com suporte a projetos sem build tool
 
 **Passos:**
-1. Abra o projeto apontando para `MyFood2026.1/` (onde está o `src/`)
+1. Abra o projeto apontando para `MyFood2026.1/` 
 2. Adicione `MyFood2026.1/lib/easyaccept.jar` ao classpath do projeto
-3. Em `Main.java`, descomente as linhas dos testes que quiser executar
-4. Rode a classe `br.ufal.ic.myfood.Main`
+3. Rode a classe `br.ufal.ic.myfood.Main`
 
 Os arquivos XML de persistência são criados automaticamente na pasta `dados/` quando `encerrarSistema` é chamado ao final dos testes.
 
@@ -60,20 +59,18 @@ MyFood2026.1/                      <- raiz do repositório
 
 O sistema é organizado em quatro camadas. A ideia central é que cada camada tem uma responsabilidade bem delimitada e não mistura coisas que não têm a ver uma com a outra.
 
-**Facade** — é o único arquivo que o EasyAccept acessa. Não tem lógica nenhuma: só recebe o comando e passa para quem sabe resolver. Isso mantém a separação entre a interface de testes e o resto do sistema.
+**Facade**: é o único arquivo que o EasyAccept acessa. Não tem lógica nenhuma: só recebe o comando e passa para quem sabe resolver.
 
-**Services** — ficam as regras de negócio. É aqui que se valida se o nome está vazio, se o email já existe, se o cliente é dono de empresa, se já tem pedido aberto. Cada entidade principal tem seu Service, e eles se comunicam entre si quando necessário (por exemplo, o `PedidoService` usa o `ProdutoService` para calcular o valor total).
+**Services**: ficam as regras de negócio. É aqui que se valida se o nome está vazio, se o email já existe, se o cliente é dono de empresa, se já tem pedido aberto. Cada entidade principal tem seu Service.
 
-**Repositories** — cuidam só de salvar e carregar dados em XML. Não sabem nada de regra de negócio. Cada Repository gerencia seu arquivo XML, o contador de IDs e as buscas simples (por ID, por email, por combinação de campos).
+**Repositories**: cuidam só de salvar e carregar dados em XML. Não sabem nada de regra de negócio. Cada Repository gerencia seu arquivo XML, o contador de IDs e as buscas simples (por ID, por email, por combinação de campos).
 
-**Models** — as entidades do domínio: `Usuario`, `Empresa`, `Produto`, `Pedido`. São JavaBeans puros, com campos privados e getters/setters, necessários para o `XMLEncoder` serializar corretamente.
+**Models**: as entidades do domínio: `Usuario`, `Empresa`, `Produto`, `Pedido`.
 
 **Fluxo de uma chamada:**
 
 ```
 EasyAccept → Facade → Service → Repository → arquivo XML
-                         ↕
-              (Services conversam entre si quando precisam)
 ```
 
 ---
@@ -88,7 +85,7 @@ EasyAccept → Facade → Service → Repository → arquivo XML
 | `ProdutoService` | Criar/editar produto, listar | `ProdutoRepository`, `EmpresaService` |
 | `PedidoService` | Criar pedido, adicionar/remover produtos, fechar | `PedidoRepository`, `UsuarioService`, `EmpresaService`, `ProdutoService` |
 | Repositories | Persistência XML e busca de dados | Arquivos XML em `dados/` |
-| Models | Representar os dados do domínio | — |
+| Models | Representar os dados do domínio |  |
 
 ---
 
@@ -98,9 +95,9 @@ EasyAccept → Facade → Service → Repository → arquivo XML
 
 **Encapsulamento:** todos os campos são `private`, acessados via getters e setters. As regras ficam nos Services, não espalhadas pelas entidades.
 
-**Abstração:** as classes base definem o contrato — `getTipo()` é abstrato, então toda subclasse é obrigada a implementar. Isso evita que o sistema opere com objetos indefinidos.
+**Abstração:** as classes base definem o contrato, `getTipo()` é abstrato, então toda subclasse é obrigada a implementar. Isso evita que o sistema opere com objetos indefinidos.
 
-**Polimorfismo:** nos Services, quando um atributo só existe em uma subclasse (como `tipoCozinha` no `Restaurante`), é feito o `instanceof` para acessá-lo. O resto do código trata tudo como `Empresa` ou `Usuario`.
+**Polimorfismo:** nos services, quando um atributo só existe em uma subclasse, é feito o instanceof` para acessá-lo. O resto do código trata tudo como `Empresa` ou `Usuario`.
 
 ---
 
@@ -153,12 +150,10 @@ No início do projeto, as classes chamadas `Manager` faziam as duas coisas ao me
 Cada entidade tem seu Repository: `UsuarioRepository`, `EmpresaRepository`, `ProdutoRepository` e `PedidoRepository`. O Repository cuida de três coisas: salvar e carregar o XML, gerar IDs sequenciais, e buscar por critérios simples (por ID, por email, por nome+empresa).
 
 ```java
-// No UsuarioRepository — só persistência e busca
 public void salvarDados() throws IOException { ... }
 public Usuario buscarPorId(int id) throws UsuarioNaoExisteException { ... }
 public boolean existeComEmail(String email) { ... }
 
-// No UsuarioService — só regra de negócio
 public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {
     validarNome(nome);
     validarEmail(email);
@@ -171,7 +166,7 @@ O Service usa o Repository sem saber se os dados estão em XML ou em outro lugar
 
 ---
 
-## User Stories implementadas — Milestone 1
+## User Stories implementadas: Milestone 1
 
 | US | Título | Testes |
 |---|---|---|
@@ -193,4 +188,4 @@ Os dados são salvos em XML com `java.beans.XMLEncoder` e carregados com `java.b
 | `dados/produtos.xml` | lista de produtos + próximo ID |
 | `dados/pedidos.xml` | lista de pedidos + próximo número |
 
-Os arquivos são criados/atualizados só quando `encerrarSistema` é chamado. O `zerarSistema` limpa tudo da memória mas não mexe nos arquivos — eles só mudam no próximo `encerrarSistema`.
+Os arquivos são criados/atualizados só quando `encerrarSistema` é chamado. O `zerarSistema` limpa tudo da memória mas não mexe nos arquivos, eles só mudam no próximo `encerrarSistema`.

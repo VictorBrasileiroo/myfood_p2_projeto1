@@ -2,6 +2,7 @@ package br.ufal.ic.myfood.services;
 
 import br.ufal.ic.myfood.exceptions.*;
 import br.ufal.ic.myfood.models.Empresa;
+import br.ufal.ic.myfood.models.Mercado;
 import br.ufal.ic.myfood.models.Restaurante;
 import br.ufal.ic.myfood.models.Usuario;
 import br.ufal.ic.myfood.repositories.EmpresaRepository;
@@ -48,6 +49,33 @@ public class EmpresaService {
 
         int id = repository.gerarId();
         repository.salvar(new Restaurante(id, nome, endereco, dono, tipoCozinha));
+        return id;
+    }
+
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String abre, String fecha, String tipoMercado) throws Exception {
+        validarTipoEmpresaMercado(tipoEmpresa);
+        validarNomeEmpresa(nome);
+        validarEnderecoEmpresa(endereco);
+        validarHorario(abre, fecha);
+        validarTipoMercado(tipoMercado);
+        validarUsuarioDono(dono);
+
+        for (Empresa empresa : repository.listarTodos()) {
+            if (empresa.getDonoId() == dono
+                    && Objects.equals(empresa.getNome(), nome)
+                    && Objects.equals(empresa.getEndereco(), endereco)) {
+                throw new EmpresaNomeELocalRepetidosException();
+            }
+        }
+
+        for (Empresa empresa : repository.listarTodos()) {
+            if (empresa.getDonoId() != dono && Objects.equals(empresa.getNome(), nome)) {
+                throw new EmpresaComNomeJaExisteException();
+            }
+        }
+
+        int id = repository.gerarId();
+        repository.salvar(new Mercado(id, nome, endereco, dono, abre, fecha, tipoMercado));
         return id;
     }
 
@@ -114,6 +142,45 @@ public class EmpresaService {
 
     public Empresa buscarPorId(int id) {
         return repository.buscarPorId(id);
+    }
+
+    private void validarTipoEmpresaMercado(String tipoEmpresa) throws TipoEmpresaInvalidoException {
+        if (tipoEmpresa == null || tipoEmpresa.trim().isEmpty() || !tipoEmpresa.equals("mercado")) {
+            throw new TipoEmpresaInvalidoException();
+        }
+    }
+
+    private void validarNomeEmpresa(String nome) throws NomeInvalidoException {
+        if (nome == null || nome.trim().isEmpty()) throw new NomeInvalidoException();
+    }
+
+    private void validarEnderecoEmpresa(String endereco) throws EnderecoEmpresaInvalidoException {
+        if (endereco == null || endereco.trim().isEmpty()) throw new EnderecoEmpresaInvalidoException();
+    }
+
+    private void validarTipoMercado(String tipoMercado) throws TipoMercadoInvalidoException {
+        if (tipoMercado == null || tipoMercado.trim().isEmpty()) throw new TipoMercadoInvalidoException();
+    }
+
+    private void validarHorario(String abre, String fecha) throws Exception {
+        if (abre == null || fecha == null) throw new HorarioInvalidoException();
+        if (!abre.matches("\\d{2}:\\d{2}") || !fecha.matches("\\d{2}:\\d{2}")) {
+            throw new FormatoHoraInvalidoException();
+        }
+
+        int abertura = converterParaMinutos(abre);
+        int fechamento = converterParaMinutos(fecha);
+
+        if (abertura >= fechamento) throw new HorarioInvalidoException();
+    }
+
+    private int converterParaMinutos(String hora) throws HorarioInvalidoException {
+        int horas = Integer.parseInt(hora.substring(0, 2));
+        int minutos = Integer.parseInt(hora.substring(3, 5));
+
+        if (horas > 23 || minutos > 59) throw new HorarioInvalidoException();
+
+        return horas * 60 + minutos;
     }
 
     private void validarUsuarioDono(int idUsuario) throws UsuarioNaoPodeCriarEmpresaException {

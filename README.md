@@ -3,75 +3,36 @@
 Nome: Victor André Lopes Brasileiro
 Matrícula: 202407269
 
-Projeto da disciplina de Programação 2 (UFAL/IC). Sistema de delivery inspirado no iFood, desenvolvido em Java puro sem interface gráfica. A lógica de negócio é verificada por testes de aceitação via EasyAccept.
+Projeto da disciplina de Programação 2 (UFAL/IC). É um sistema de delivery tipo iFood, feito em Java puro sem interface gráfica. Os testes de aceitação rodam via EasyAccept.
 
 ---
 
 ## Como rodar
 
-O código-fonte fica dentro da subpasta `MyFood2026.1/`. Ao abrir na IDE, aponte para essa pasta como raiz do projeto (onde está o `src/`), não para a pasta externa.
-
-**Requisitos:**
-- JDK 11 ou superior
-- IntelliJ IDEA ou outra IDE Java com suporte a projetos sem build tool
+O código-fonte tá dentro da pasta `MyFood2026.1/`. Quando abrir na IDE, aponta pra essa pasta como raiz do projeto (onde tem o `src/`), não pra pasta de fora.
 
 **Passos:**
 1. Abra o projeto apontando para `MyFood2026.1/` 
 2. Adicione `MyFood2026.1/lib/easyaccept.jar` ao classpath do projeto
 3. Rode a classe `br.ufal.ic.myfood.Main`
 
-Os arquivos XML de persistência são criados automaticamente na pasta `dados/` quando `encerrarSistema` é chamado ao final dos testes.
+Os arquivos XML são criados automaticamente na pasta `dados/` quando `encerrarSistema` é chamado ao final dos testes.
 
-> Atenção: os testes referenciam os arquivos com o caminho `MyFood2026.1/tests/usX_Y.txt`, então o working directory precisa ser a pasta raiz do repositório, não a subpasta.
-
----
-
-## Estrutura de pastas
-
-```
-MyFood2026.1/                      <- raiz do repositório
-├── README.md
-├── docs/                          <- documentação por User Story
-│   ├── DOC_GERAL_US1.md
-│   ├── DOC_GERAL_US2.md
-│   ├── DOC_GERAL_US3.md
-│   └── DOC_GERAL_US4.md
-└── MyFood2026.1/                  <- projeto Java
-    ├── lib/
-    │   └── easyaccept.jar
-    ├── tests/                     <- scripts de teste EasyAccept
-    │   ├── us1_1.txt  us1_2.txt
-    │   ├── us2_1.txt  us2_2.txt
-    │   ├── us3_1.txt  us3_2.txt
-    │   └── us4_1.txt  us4_2.txt
-    └── src/br/ufal/ic/myfood/
-        ├── Facade.java            <- ponto de entrada dos testes
-        ├── Main.java              <- runner
-        ├── models/                <- entidades do domínio
-        ├── repositories/          <- persistência XML
-        ├── services/              <- regras de negócio
-        └── exceptions/            <- exceções por tipo de erro
-```
+Os testes buscam os arquivos em `MyFood2026.1/tests/usX_Y.txt`, então se mudar a estrutura de pastas, tem que atualizar os caminhos nos testes.
 
 ---
 
-## Design arquitetural do sistema
+## Arquitetura do sistema
 
-O sistema é organizado em quatro camadas. A ideia central é que cada camada tem uma responsabilidade bem delimitada e não mistura coisas que não têm a ver uma com a outra.
+O sistema é organizado em quatro camadas, cada uma com uma responsabilidade bem definida. A ideia é não misturar coisas que não têm nada a ver uma com a outra.
 
-**Facade**: é o único arquivo que o EasyAccept acessa. Não tem lógica nenhuma: só recebe o comando e passa para quem sabe resolver.
+**Facade**: é o único arquivo que o EasyAccept fala. Não tem lógica nenhuma aqui, só recebe o comando e passa pra quem tem que resolver.
 
-**Services**: ficam as regras de negócio. É aqui que se valida se o nome está vazio, se o email já existe, se o cliente é dono de empresa, se já tem pedido aberto. Cada entidade principal tem seu Service.
+**Services**: é onde ficam as regras de negócio. Aqui a gente valida as regras de criação, edição, consulta, etc.
 
-**Repositories**: cuidam só de salvar e carregar dados em XML. Não sabem nada de regra de negócio. Cada Repository gerencia seu arquivo XML, o contador de IDs e as buscas simples (por ID, por email, por combinação de campos).
+**Repositories**: só cuida de salvar e carregar dados em XML. Não tem conhecimento nenhum de regra de negócio.
 
-**Models**: as entidades do domínio: `Usuario`, `Empresa`, `Produto`, `Pedido`.
-
-**Fluxo de uma chamada:**
-
-```
-EasyAccept → Facade → Service → Repository → arquivo XML
-```
+**Models**: as entidades do sistema: `Usuario`, `Empresa`, `Produto`, `Pedido`.
 
 ---
 
@@ -91,13 +52,13 @@ EasyAccept → Facade → Service → Repository → arquivo XML
 
 ## Conceitos de POO aplicados
 
-**Herança:** `Usuario` e `Empresa` são classes abstratas. `Cliente` e `DonoDeEmpresa` estendem `Usuario`; `Restaurante` estende `Empresa`. Cada subclasse implementa `getTipo()`, que identifica o tipo sem precisar de verificação externa.
+**Herança:** `Usuario` e `Empresa` são abstratas. `Cliente` e `DonoDeEmpresa` herdam de `Usuario`; `Restaurante` herda de `Empresa`. Cada uma tem seu `getTipo()` pra identificar o tipo sem ficar fazendo if/else.
 
-**Encapsulamento:** todos os campos são `private`, acessados via getters e setters. As regras ficam nos Services, não espalhadas pelas entidades.
+**Encapsulamento:** tudo é `private`, com getters e setters. As regras do negócio ficam nos Services, não espalhadas por aí.
 
-**Abstração:** as classes base definem o contrato, `getTipo()` é abstrato, então toda subclasse é obrigada a implementar. Isso evita que o sistema opere com objetos indefinidos.
+**Abstração:** as classes base definem o contrato, `getTipo()` é abstrato, então toda subclasse tem que implementar. Isso evita trabalhar com objetos que não sabem o que são.
 
-**Polimorfismo:** nos services, quando um atributo só existe em uma subclasse, é feito o instanceof` para acessá-lo. O resto do código trata tudo como `Empresa` ou `Usuario`.
+**Polimorfismo:** nos services, quando um atributo é só de uma subclasse, usa-se `instanceof` pra acessar. O resto do código trata tudo como `Empresa` ou `Usuario`.
 
 ---
 
@@ -107,27 +68,17 @@ EasyAccept → Facade → Service → Repository → arquivo XML
 
 **Descrição Geral**
 
-O Facade é um padrão estrutural que cria uma interface simplificada para um conjunto de classes internas de um sistema. Em vez de o cliente precisar conhecer como as partes internas funcionam, ele faz tudo por meio de uma única classe que organiza e repassa as chamadas.
+O Facade é um padrão que cria uma interface simplificada pra um monte de classes internas. Em vez do cliente precisar saber como funciona internamente, ele faz tudo por uma única classe que repassa as chamadas.
 
 **Problema Resolvido**
 
-Em sistemas com várias camadas, quem chama de fora não deveria precisar saber como o sistema está organizado internamente. O problema é quando a classe de entrada começa a concentrar lógica, misturando responsabilidades que não são dela.
+Em sistemas com várias camadas, quem chama de fora não deveria ficar sabendo como o sistema é organizado. O problema começa quando a classe de entrada fica concentrando lógica, misturando coisas que não são da responsabilidade dela.
 
 **Identificação da Oportunidade**
 
-O EasyAccept exige um único ponto de entrada com métodos que correspondam exatamente aos comandos dos scripts de teste. Qualquer lógica dentro da `Facade` tornaria os testes dependentes da implementação. Ficou claro que a `Facade` deveria ser só um repasse, e toda a lógica precisava ficar em outro lugar.
+O EasyAccept exige um único ponto de entrada com métodos que correspondam aos comandos dos testes. Se a `Facade` tivesse lógica, os testes ficariam acoplados à implementação. Ficou claro que ela deveria só repassar as chamadas, e a lógica tinha que ficar em outro lugar.
 
-**Aplicação no Projeto**
-
-A classe `Facade.java` contém todos os métodos chamados pelo EasyAccept (`criarUsuario`, `login`, `criarEmpresa`, `criarProduto`, `criarPedido`, etc.). Cada método apenas delega para o Service responsável:
-
-```java
-public int criarPedido(int cliente, int empresa) throws Exception {
-    return pedidoService.criarPedido(cliente, empresa);
-}
-```
-
-Os testes não sabem que existem Services, Repositories ou Models. Toda mudança interna no sistema pode ser feita sem alterar a Facade, e os testes continuam funcionando.
+Os testes não tão preocupados que existem Services, Repositories ou Models lá. Qualquer mudança interna no sistema pode ser feita sem mexer na Facade, e os testes continuam funcionando normal.
 
 ---
 
@@ -135,34 +86,21 @@ Os testes não sabem que existem Services, Repositories ou Models. Toda mudança
 
 **Descrição Geral**
 
-O Repository é um padrão que isola o acesso a dados do resto da aplicação. Ele age como uma coleção de objetos de domínio, escondendo os detalhes de como os dados são salvos e recuperados. O código que usa um Repository não precisa saber se os dados estão em XML, banco de dados ou qualquer outro lugar.
+O Repository é um padrão que isola o acesso a dados do resto da aplicação. Age como uma coleção de objetos, escondendo como os dados são salvos e recuperados. Quem usa um Repository não precisa saber se os dados tão em XML, banco de dados ou outro lugar qualquer.
 
 **Problema Resolvido**
 
-O padrão resolve o problema de classes que acumulam responsabilidades demais: aplicar regras de negócio e ao mesmo tempo saber como persistir dados. Quando essas duas coisas ficam juntas, uma mudança pequena na forma de salvar pode quebrar uma validação, e fica difícil testar as regras de negócio isoladas.
+O padrão resolve o problema de classes que acumulam responsabilidade demais: aplicar regras do negócio E ao mesmo tempo saber como persistir dados. Quando essas duas coisas ficam juntas, uma mudança pequena na forma de salvar pode quebrar uma validação.
 
 **Identificação da Oportunidade**
 
-No início do projeto, as classes chamadas `Manager` faziam as duas coisas ao mesmo tempo: validavam campos, aplicavam regras de criação, e também tinham os métodos `salvarDados()` e `carregarDados()` com o XML. Ficou nítido que `salvarDados()` não tem nada a ver com "o nome do produto não pode ser duplicado na mesma empresa". Eram dois problemas diferentes vivendo na mesma classe.
+No início do projeto, as classes chamadas `Manager` faziam as duas coisas: validavam campos, aplicavam regras de criação, E além disso tinham `salvarDados()` e `carregarDados()` com XML. Ficou claro que `salvarDados()` não tem NADA a ver com "o nome do produto não pode duplicar". Eram dois problemas diferentes na mesma classe.
 
 **Aplicação no Projeto**
 
-Cada entidade tem seu Repository: `UsuarioRepository`, `EmpresaRepository`, `ProdutoRepository` e `PedidoRepository`. O Repository cuida de três coisas: salvar e carregar o XML, gerar IDs sequenciais, e buscar por critérios simples (por ID, por email, por nome+empresa).
+Cada entidade tem seu Repository: `UsuarioRepository`, `EmpresaRepository`, `ProdutoRepository` e `PedidoRepository`. O Repository se preocupa com três coisas: salvar e carregar XML, gerar IDs sequenciais, e buscar por critérios simples.
 
-```java
-public void salvarDados() throws IOException { ... }
-public Usuario buscarPorId(int id) throws UsuarioNaoExisteException { ... }
-public boolean existeComEmail(String email) { ... }
-
-public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {
-    validarNome(nome);
-    validarEmail(email);
-    validarEmailDuplicado(email); // usa repository.existeComEmail(email)
-    repository.salvar(new Cliente(repository.gerarId(), nome, email, senha, endereco));
-}
-```
-
-O Service usa o Repository sem saber se os dados estão em XML ou em outro lugar. Isso mantém as regras de negócio testáveis e a persistência trocável.
+O Service usa o Repository sem se preocupar se os dados tão em XML ou em outro lugar. Isso deixa as regras de negócio testáveis e a persistência fácil de trocar.
 
 ---
 
@@ -179,13 +117,13 @@ O Service usa o Repository sem saber se os dados estão em XML ou em outro lugar
 
 ## Persistência
 
-Os dados são salvos em XML com `java.beans.XMLEncoder` e carregados com `java.beans.XMLDecoder`. Cada entidade tem seu arquivo:
+Os dados são salvos em XML usando `java.beans.XMLEncoder` e carregados com `java.beans.XMLDecoder`. Cada entidade tem seu arquivo:
 
 | Arquivo | Conteúdo |
 |---|---|
-| `dados/usuarios.xml` | lista de usuários + próximo ID |
-| `dados/empresas.xml` | lista de empresas + próximo ID |
-| `dados/produtos.xml` | lista de produtos + próximo ID |
-| `dados/pedidos.xml` | lista de pedidos + próximo número |
+| `dados/usuarios.xml` | usuários + próximo ID |
+| `dados/empresas.xml` | empresas + próximo ID |
+| `dados/produtos.xml` | produtos + próximo ID |
+| `dados/pedidos.xml` | pedidos + próximo número |
 
-Os arquivos são criados/atualizados só quando `encerrarSistema` é chamado. O `zerarSistema` limpa tudo da memória mas não mexe nos arquivos, eles só mudam no próximo `encerrarSistema`.
+Os arquivos são atualizados só quando `encerrarSistema` é chamado. O `zerarSistema` limpa tudo da memória mas não mexe nos arquivos, eles só mudam no próximo `encerrarSistema`.

@@ -76,6 +76,10 @@ public class Facade {
         return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, tipoCozinha);
     }
 
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String abre, String fecha, String tipoMercado) throws Exception {
+        return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, abre, fecha, tipoMercado);
+    }
+
     public String getEmpresasDoUsuario(int idDono) throws Exception {
         return empresaService.getEmpresasDoUsuario(idDono);
     }

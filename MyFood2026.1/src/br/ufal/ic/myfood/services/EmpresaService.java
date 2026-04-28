@@ -113,6 +113,15 @@ public class EmpresaService {
             case "tipoCozinha":
                 if (empresa instanceof Restaurante) return ((Restaurante) empresa).getTipoCozinha();
                 throw new AtributoInvalidoExc();
+            case "abre":
+                if (empresa instanceof Mercado) return ((Mercado) empresa).getAbre();
+                throw new AtributoInvalidoExc();
+            case "fecha":
+                if (empresa instanceof Mercado) return ((Mercado) empresa).getFecha();
+                throw new AtributoInvalidoExc();
+            case "tipoMercado":
+                if (empresa instanceof Mercado) return ((Mercado) empresa).getTipoMercado();
+                throw new AtributoInvalidoExc();
             case "dono":
                 Usuario dono = usuarioService.buscarPorId(empresa.getDonoId());
                 return dono.getNome();
@@ -142,6 +151,17 @@ public class EmpresaService {
 
     public Empresa buscarPorId(int id) {
         return repository.buscarPorId(id);
+    }
+
+    public void alterarFuncionamento(int mercadoId, String abre, String fecha) throws Exception {
+        Empresa empresa = repository.buscarPorId(mercadoId);
+        if (!(empresa instanceof Mercado)) throw new MercadoInvalidoException();
+
+        validarHorario(abre, fecha);
+
+        Mercado mercado = (Mercado) empresa;
+        mercado.setAbre(abre);
+        mercado.setFecha(fecha);
     }
 
     private void validarTipoEmpresaMercado(String tipoEmpresa) throws TipoEmpresaInvalidoException {

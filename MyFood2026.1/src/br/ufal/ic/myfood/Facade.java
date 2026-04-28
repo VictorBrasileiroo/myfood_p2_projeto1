@@ -92,6 +92,10 @@ public class Facade {
         return empresaService.getIdEmpresa(idDono, nome, indice);
     }
 
+    public void alterarFuncionamento(int mercado, String abre, String fecha) throws Exception {
+        empresaService.alterarFuncionamento(mercado, abre, fecha);
+    }
+
     public int criarProduto(int empresa, String nome, double valor, String categoria) throws Exception {
         return produtoService.criarProduto(empresa, nome, valor, categoria);
     }

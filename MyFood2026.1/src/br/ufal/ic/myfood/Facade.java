@@ -80,6 +80,10 @@ public class Facade {
         return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, abre, fecha, tipoMercado);
     }
 
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, boolean aberto24Horas, int numeroFuncionarios) throws Exception {
+        return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, aberto24Horas, numeroFuncionarios);
+    }
+
     public String getEmpresasDoUsuario(int idDono) throws Exception {
         return empresaService.getEmpresasDoUsuario(idDono);
     }

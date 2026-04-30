@@ -2,6 +2,7 @@ package br.ufal.ic.myfood.services;
 
 import br.ufal.ic.myfood.exceptions.*;
 import br.ufal.ic.myfood.models.Empresa;
+import br.ufal.ic.myfood.models.Farmacia;
 import br.ufal.ic.myfood.models.Mercado;
 import br.ufal.ic.myfood.models.Restaurante;
 import br.ufal.ic.myfood.models.Usuario;
@@ -76,6 +77,31 @@ public class EmpresaService {
 
         int id = repository.gerarId();
         repository.salvar(new Mercado(id, nome, endereco, dono, abre, fecha, tipoMercado));
+        return id;
+    }
+
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, boolean aberto24Horas, int numeroFuncionarios) throws Exception {
+        validarTipoEmpresaFarmacia(tipoEmpresa);
+        validarNomeEmpresa(nome);
+        validarEnderecoEmpresa(endereco);
+        validarUsuarioDono(dono);
+
+        for (Empresa empresa : repository.listarTodos()) {
+            if (empresa.getDonoId() == dono
+                    && Objects.equals(empresa.getNome(), nome)
+                    && Objects.equals(empresa.getEndereco(), endereco)) {
+                throw new EmpresaNomeELocalRepetidosException();
+            }
+        }
+
+        for (Empresa empresa : repository.listarTodos()) {
+            if (empresa.getDonoId() != dono && Objects.equals(empresa.getNome(), nome)) {
+                throw new EmpresaComNomeJaExisteException();
+            }
+        }
+
+        int id = repository.gerarId();
+        repository.salvar(new Farmacia(id, nome, endereco, dono, aberto24Horas, numeroFuncionarios));
         return id;
     }
 
@@ -166,6 +192,12 @@ public class EmpresaService {
 
     private void validarTipoEmpresaMercado(String tipoEmpresa) throws TipoEmpresaInvalidoException {
         if (tipoEmpresa == null || tipoEmpresa.trim().isEmpty() || !tipoEmpresa.equals("mercado")) {
+            throw new TipoEmpresaInvalidoException();
+        }
+    }
+
+    private void validarTipoEmpresaFarmacia(String tipoEmpresa) throws TipoEmpresaInvalidoException {
+        if (tipoEmpresa == null || tipoEmpresa.trim().isEmpty() || !tipoEmpresa.equals("farmacia")) {
             throw new TipoEmpresaInvalidoException();
         }
     }

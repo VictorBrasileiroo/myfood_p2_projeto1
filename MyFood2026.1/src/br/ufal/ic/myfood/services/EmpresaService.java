@@ -148,6 +148,12 @@ public class EmpresaService {
             case "tipoMercado":
                 if (empresa instanceof Mercado) return ((Mercado) empresa).getTipoMercado();
                 throw new AtributoInvalidoExc();
+            case "aberto24Horas":
+                if (empresa instanceof Farmacia) return String.valueOf(((Farmacia) empresa).isAberto24Horas());
+                throw new AtributoInvalidoExc();
+            case "numeroFuncionarios":
+                if (empresa instanceof Farmacia) return String.valueOf(((Farmacia) empresa).getNumeroFuncionarios());
+                throw new AtributoInvalidoExc();
             case "dono":
                 Usuario dono = usuarioService.buscarPorId(empresa.getDonoId());
                 return dono.getNome();

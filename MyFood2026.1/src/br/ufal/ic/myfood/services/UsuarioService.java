@@ -3,6 +3,7 @@ package br.ufal.ic.myfood.services;
 import br.ufal.ic.myfood.exceptions.*;
 import br.ufal.ic.myfood.models.Cliente;
 import br.ufal.ic.myfood.models.DonoDeEmpresa;
+import br.ufal.ic.myfood.models.Entregador;
 import br.ufal.ic.myfood.models.Usuario;
 import br.ufal.ic.myfood.repositories.UsuarioRepository;
 
@@ -45,6 +46,19 @@ public class UsuarioService {
         repository.salvar(new DonoDeEmpresa(repository.gerarId(), nome, email, senha, endereco, cpf));
     }
 
+    public void criarUsuario(String nome, String email, String senha, String endereco, String veiculo, String placa) throws Exception {
+        validarNome(nome);
+        validarEmail(email);
+        validarSenha(senha);
+        validarEndereco(endereco);
+        validarVeiculo(veiculo);
+        validarPlaca(placa);
+        validarEmailDuplicado(email);
+        validarPlacaDuplicada(placa);
+
+        repository.salvar(new Entregador(repository.gerarId(), nome, email, senha, endereco, veiculo, placa));
+    }
+
     public int login(String email, String senha) throws LoginSenhaInvalidosException {
         if (email == null || email.trim().isEmpty() || senha == null || senha.trim().isEmpty()) {
             throw new LoginSenhaInvalidosException();
@@ -72,6 +86,16 @@ public class UsuarioService {
             case "cpf":
                 if (usuario instanceof DonoDeEmpresa) {
                     return ((DonoDeEmpresa) usuario).getCpf();
+                }
+                throw new AtributoInvalidoExc();
+            case "veiculo":
+                if (usuario instanceof Entregador) {
+                    return ((Entregador) usuario).getVeiculo();
+                }
+                throw new AtributoInvalidoExc();
+            case "placa":
+                if (usuario instanceof Entregador) {
+                    return ((Entregador) usuario).getPlaca();
                 }
                 throw new AtributoInvalidoExc();
             default:
@@ -113,7 +137,19 @@ public class UsuarioService {
         if (digitos.length() != 11) throw new CpfInvalidoException();
     }
 
+    private void validarVeiculo(String veiculo) throws VeiculoInvalidoException {
+        if (veiculo == null || veiculo.trim().isEmpty()) throw new VeiculoInvalidoException();
+    }
+
+    private void validarPlaca(String placa) throws PlacaInvalidoException {
+        if (placa == null || placa.trim().isEmpty()) throw new PlacaInvalidoException();
+    }
+
     private void validarEmailDuplicado(String email) throws UsuarioJaExisteException {
         if (repository.existeComEmail(email)) throw new UsuarioJaExisteException();
+    }
+
+    private void validarPlacaDuplicada(String placa) throws PlacaInvalidoException {
+        if (repository.existeComPlaca(placa)) throw new PlacaInvalidoException();
     }
 }

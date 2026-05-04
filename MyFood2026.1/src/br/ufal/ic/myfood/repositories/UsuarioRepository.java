@@ -1,6 +1,7 @@
 package br.ufal.ic.myfood.repositories;
 
 import br.ufal.ic.myfood.exceptions.UsuarioNaoExisteException;
+import br.ufal.ic.myfood.models.Entregador;
 import br.ufal.ic.myfood.models.Usuario;
 
 import java.beans.XMLDecoder;
@@ -61,6 +62,13 @@ public class UsuarioRepository {
     public boolean existeComEmail(String email) {
         for (Usuario u : usuarios) {
             if (u.getEmail().equals(email)) return true;
+        }
+        return false;
+    }
+
+    public boolean existeComPlaca(String placa) {
+        for (Usuario u : usuarios) {
+            if (u instanceof Entregador && ((Entregador) u).getPlaca().equals(placa)) return true;
         }
         return false;
     }

@@ -16,8 +16,10 @@ public class Main {
 //        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us4_2.txt"});
 //        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us5_1.txt"});
 //        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us5_2.txt"});
-        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us6_1.txt"});
-        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us6_2.txt"});
+//        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us6_1.txt"});
+//        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us6_2.txt"});
+        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us7_1.txt"});
+        EasyAccept.main(new String[] {"br.ufal.ic.myfood.Facade", base + "us7_2.txt"});
     }
 
     private static String findTestBase() {

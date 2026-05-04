@@ -64,6 +64,10 @@ public class Facade {
         usuarioService.criarUsuario(nome, email, senha, endereco, cpf);
     }
 
+    public void criarUsuario(String nome, String email, String senha, String endereco, String veiculo, String placa) throws Exception {
+        usuarioService.criarUsuario(nome, email, senha, endereco, veiculo, placa);
+    }
+
     public int login(String email, String senha) throws Exception {
         return usuarioService.login(email, senha);
     }

@@ -53,8 +53,8 @@ public class UsuarioService {
         validarEndereco(endereco);
         validarVeiculo(veiculo);
         validarPlaca(placa);
-        validarEmailDuplicado(email);
         validarPlacaDuplicada(placa);
+        validarEmailDuplicado(email);
 
         repository.salvar(new Entregador(repository.gerarId(), nome, email, senha, endereco, veiculo, placa));
     }

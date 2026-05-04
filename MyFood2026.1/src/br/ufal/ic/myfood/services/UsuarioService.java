@@ -115,6 +115,14 @@ public class UsuarioService {
         }
     }
 
+    public boolean ehEntregador(int id) {
+        try {
+            return repository.buscarPorId(id) instanceof Entregador;
+        } catch (UsuarioNaoExisteException e) {
+            return false;
+        }
+    }
+
     private void validarNome(String nome) throws NomeInvalidoException {
         if (nome == null || nome.trim().isEmpty()) throw new NomeInvalidoException();
     }

@@ -196,6 +196,55 @@ public class EmpresaService {
         mercado.setFecha(fecha);
     }
 
+    public void cadastrarEntregador(int empresaId, int entregadorId) throws Exception {
+        if (!usuarioService.ehEntregador(entregadorId)) throw new UsuarioNaoEntregadorException();
+
+        Empresa empresa = repository.buscarPorId(empresaId);
+        List<Integer> entregadores = empresa.getEntregadoresIds();
+
+        if (!entregadores.contains(entregadorId)) {
+            entregadores.add(entregadorId);
+        }
+    }
+
+    public String getEntregadores(int empresaId) throws Exception {
+        Empresa empresa = repository.buscarPorId(empresaId);
+        List<Integer> entregadores = empresa.getEntregadoresIds();
+
+        if (entregadores.isEmpty()) return "{[]}";
+
+        StringBuilder resultado = new StringBuilder("{[");
+        for (int i = 0; i < entregadores.size(); i++) {
+            Usuario entregador = usuarioService.buscarPorId(entregadores.get(i));
+            resultado.append(entregador.getEmail());
+            if (i < entregadores.size() - 1) resultado.append(", ");
+        }
+        resultado.append("]}");
+        return resultado.toString();
+    }
+
+    public String getEmpresas(int entregadorId) throws Exception {
+        if (!usuarioService.ehEntregador(entregadorId)) throw new UsuarioNaoEntregadorException();
+
+        List<Empresa> empresasDoEntregador = new ArrayList<>();
+        for (Empresa empresa : repository.listarTodos()) {
+            if (empresa.getEntregadoresIds().contains(entregadorId)) {
+                empresasDoEntregador.add(empresa);
+            }
+        }
+
+        if (empresasDoEntregador.isEmpty()) return "{[]}";
+
+        StringBuilder resultado = new StringBuilder("{[");
+        for (int i = 0; i < empresasDoEntregador.size(); i++) {
+            Empresa empresa = empresasDoEntregador.get(i);
+            resultado.append("[").append(empresa.getNome()).append(", ").append(empresa.getEndereco()).append("]");
+            if (i < empresasDoEntregador.size() - 1) resultado.append(", ");
+        }
+        resultado.append("]}");
+        return resultado.toString();
+    }
+
     private void validarTipoEmpresaMercado(String tipoEmpresa) throws TipoEmpresaInvalidoException {
         if (tipoEmpresa == null || tipoEmpresa.trim().isEmpty() || !tipoEmpresa.equals("mercado")) {
             throw new TipoEmpresaInvalidoException();

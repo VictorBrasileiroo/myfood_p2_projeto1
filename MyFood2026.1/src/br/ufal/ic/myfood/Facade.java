@@ -104,6 +104,18 @@ public class Facade {
         empresaService.alterarFuncionamento(mercado, abre, fecha);
     }
 
+    public void cadastrarEntregador(int empresa, int entregador) throws Exception {
+        empresaService.cadastrarEntregador(empresa, entregador);
+    }
+
+    public String getEntregadores(int empresa) throws Exception {
+        return empresaService.getEntregadores(empresa);
+    }
+
+    public String getEmpresas(int entregador) throws Exception {
+        return empresaService.getEmpresas(entregador);
+    }
+
     public int criarProduto(int empresa, String nome, double valor, String categoria) throws Exception {
         return produtoService.criarProduto(empresa, nome, valor, categoria);
     }

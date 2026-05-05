@@ -148,6 +148,14 @@ public class Facade {
         pedidoService.fecharPedido(numero);
     }
 
+    public void liberarPedido(int numero) throws Exception {
+        pedidoService.liberarPedido(numero);
+    }
+
+    public int obterPedido(int entregador) throws Exception {
+        return pedidoService.obterPedido(entregador);
+    }
+
     public void removerProduto(int pedido, String produto) throws Exception {
         pedidoService.removerProduto(pedido, produto);
     }

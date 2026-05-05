@@ -245,6 +245,22 @@ public class EmpresaService {
         return resultado.toString();
     }
 
+    public boolean entregadorTrabalhaNaEmpresa(int empresaId, int entregadorId) {
+        Empresa empresa = repository.buscarPorId(empresaId);
+        return empresa != null && empresa.getEntregadoresIds().contains(entregadorId);
+    }
+
+    public boolean entregadorTemEmpresa(int entregadorId) {
+        for (Empresa empresa : repository.listarTodos()) {
+            if (empresa.getEntregadoresIds().contains(entregadorId)) return true;
+        }
+        return false;
+    }
+
+    public boolean ehFarmacia(int empresaId) {
+        return repository.buscarPorId(empresaId) instanceof Farmacia;
+    }
+
     private void validarTipoEmpresaMercado(String tipoEmpresa) throws TipoEmpresaInvalidoException {
         if (tipoEmpresa == null || tipoEmpresa.trim().isEmpty() || !tipoEmpresa.equals("mercado")) {
             throw new TipoEmpresaInvalidoException();

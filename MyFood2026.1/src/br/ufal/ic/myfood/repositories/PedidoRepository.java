@@ -68,6 +68,10 @@ public class PedidoRepository {
         return null;
     }
 
+    public List<Pedido> listarTodos() {
+        return pedidos;
+    }
+
     public int gerarNumero() {
         return this.proximoNumero++;
     }

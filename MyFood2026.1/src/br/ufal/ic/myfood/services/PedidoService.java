@@ -86,6 +86,39 @@ public class PedidoService {
         pedido.setEstado("preparando");
     }
 
+    public void liberarPedido(int numero) throws Exception {
+        Pedido pedido = repository.buscarPorNumero(numero);
+
+        if ("pronto".equals(pedido.getEstado())) throw new PedidoJaLiberadoException();
+        if (!"preparando".equals(pedido.getEstado())) throw new PedidoNaoPreparandoException();
+
+        pedido.setEstado("pronto");
+    }
+
+    public int obterPedido(int entregadorId) throws Exception {
+        if (!usuarioService.ehEntregador(entregadorId)) throw new UsuarioNaoEntregadorException();
+        if (!empresaService.entregadorTemEmpresa(entregadorId)) throw new EntregadorSemEmpresaException();
+
+        Pedido primeiroPedido = null;
+        Pedido primeiroPedidoFarmacia = null;
+
+        for (Pedido pedido : repository.listarTodos()) {
+            if (!"pronto".equals(pedido.getEstado())) continue;
+            if (!empresaService.entregadorTrabalhaNaEmpresa(pedido.getEmpresaId(), entregadorId)) continue;
+
+            if (empresaService.ehFarmacia(pedido.getEmpresaId())) {
+                if (primeiroPedidoFarmacia == null) primeiroPedidoFarmacia = pedido;
+            } else if (primeiroPedido == null) {
+                primeiroPedido = pedido;
+            }
+        }
+
+        if (primeiroPedidoFarmacia != null) return primeiroPedidoFarmacia.getNumero();
+        if (primeiroPedido != null) return primeiroPedido.getNumero();
+
+        throw new PedidoParaEntregaNaoExisteException();
+    }
+
     public void removerProduto(int numero, String nomeProduto) throws Exception {
         if (nomeProduto == null || nomeProduto.trim().isEmpty()) throw new ProdutoInvalidoException();
 

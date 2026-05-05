@@ -1,10 +1,12 @@
 package br.ufal.ic.myfood;
 
 import br.ufal.ic.myfood.repositories.EmpresaRepository;
+import br.ufal.ic.myfood.repositories.EntregaRepository;
 import br.ufal.ic.myfood.repositories.PedidoRepository;
 import br.ufal.ic.myfood.repositories.ProdutoRepository;
 import br.ufal.ic.myfood.repositories.UsuarioRepository;
 import br.ufal.ic.myfood.services.EmpresaService;
+import br.ufal.ic.myfood.services.EntregaService;
 import br.ufal.ic.myfood.services.PedidoService;
 import br.ufal.ic.myfood.services.ProdutoService;
 import br.ufal.ic.myfood.services.UsuarioService;
@@ -15,6 +17,7 @@ public class Facade {
     private EmpresaService empresaService;
     private ProdutoService produtoService;
     private PedidoService pedidoService;
+    private EntregaService entregaService;
 
     public Facade() {
         UsuarioRepository usuarioRepo = new UsuarioRepository();
@@ -29,10 +32,14 @@ public class Facade {
         PedidoRepository pedidoRepo = new PedidoRepository();
         this.pedidoService = new PedidoService(pedidoRepo, this.usuarioService, this.empresaService, this.produtoService);
 
+        EntregaRepository entregaRepo = new EntregaRepository();
+        this.entregaService = new EntregaService(entregaRepo, this.pedidoService, this.usuarioService, this.empresaService, this.produtoService);
+
         try { usuarioRepo.carregarDados(); } catch (Exception e) {}
         try { empresaRepo.carregarDados(); } catch (Exception e) {}
         try { produtoRepo.carregarDados(); } catch (Exception e) {}
         try { pedidoRepo.carregarDados(); } catch (Exception e) {}
+        try { entregaRepo.carregarDados(); } catch (Exception e) {}
     }
 
     public void zerarSistema() {
@@ -47,6 +54,9 @@ public class Facade {
 
         PedidoRepository pedidoRepo = new PedidoRepository();
         this.pedidoService = new PedidoService(pedidoRepo, this.usuarioService, this.empresaService, this.produtoService);
+
+        EntregaRepository entregaRepo = new EntregaRepository();
+        this.entregaService = new EntregaService(entregaRepo, this.pedidoService, this.usuarioService, this.empresaService, this.produtoService);
     }
 
     public void encerrarSistema() {
@@ -54,6 +64,7 @@ public class Facade {
         try { empresaService.salvarDados(); } catch (Exception e) {}
         try { produtoService.salvarDados(); } catch (Exception e) {}
         try { pedidoService.salvarDados(); } catch (Exception e) {}
+        try { entregaService.salvarDados(); } catch (Exception e) {}
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {
@@ -154,6 +165,18 @@ public class Facade {
 
     public int obterPedido(int entregador) throws Exception {
         return pedidoService.obterPedido(entregador);
+    }
+
+    public int criarEntrega(int pedido, int entregador, String destino) throws Exception {
+        return entregaService.criarEntrega(pedido, entregador, destino);
+    }
+
+    public String getEntrega(int id, String atributo) throws Exception {
+        return entregaService.getEntrega(id, atributo);
+    }
+
+    public int getIdEntrega(int pedido) throws Exception {
+        return entregaService.getIdEntrega(pedido);
     }
 
     public void removerProduto(int pedido, String produto) throws Exception {

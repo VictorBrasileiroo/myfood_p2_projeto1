@@ -179,6 +179,10 @@ public class Facade {
         return entregaService.getIdEntrega(pedido);
     }
 
+    public void entregar(int entrega) throws Exception {
+        entregaService.entregar(entrega);
+    }
+
     public void removerProduto(int pedido, String produto) throws Exception {
         pedidoService.removerProduto(pedido, produto);
     }

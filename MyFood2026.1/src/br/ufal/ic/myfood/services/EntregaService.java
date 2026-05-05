@@ -77,6 +77,13 @@ public class EntregaService {
         return entrega.getId();
     }
 
+    public void entregar(int entregaId) throws Exception {
+        Entrega entrega = repository.buscarPorId(entregaId);
+        if (entrega == null) throw new EntregaInexistenteException();
+
+        pedidoService.marcarEntregue(entrega.getPedidoId());
+    }
+
     private boolean entregadorEstaEmEntrega(int entregadorId) {
         for (Entrega entrega : repository.listarTodos()) {
             Pedido pedido = pedidoService.buscarPorNumero(entrega.getPedidoId());

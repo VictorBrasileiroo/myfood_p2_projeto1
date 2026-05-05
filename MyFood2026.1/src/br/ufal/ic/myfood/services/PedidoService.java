@@ -94,6 +94,10 @@ public class PedidoService {
         repository.buscarPorNumero(numero).setEstado("entregando");
     }
 
+    public void marcarEntregue(int numero) {
+        repository.buscarPorNumero(numero).setEstado("entregue");
+    }
+
     public void liberarPedido(int numero) throws Exception {
         Pedido pedido = repository.buscarPorNumero(numero);
 

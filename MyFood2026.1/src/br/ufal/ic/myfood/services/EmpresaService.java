@@ -32,21 +32,7 @@ public class EmpresaService {
     }
 
     public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) throws Exception {
-        validarUsuarioDono(dono);
-
-        for (Empresa empresa : repository.listarTodos()) {
-            if (empresa.getDonoId() == dono
-                    && Objects.equals(empresa.getNome(), nome)
-                    && Objects.equals(empresa.getEndereco(), endereco)) {
-                throw new EmpresaNomeELocalRepetidosException();
-            }
-        }
-
-        for (Empresa empresa : repository.listarTodos()) {
-            if (empresa.getDonoId() != dono && Objects.equals(empresa.getNome(), nome)) {
-                throw new EmpresaComNomeJaExisteException();
-            }
-        }
+        validarDonoECadastroDisponivel(dono, nome, endereco);
 
         int id = repository.gerarId();
         repository.salvar(new Restaurante(id, nome, endereco, dono, tipoCozinha));
@@ -54,26 +40,12 @@ public class EmpresaService {
     }
 
     public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String abre, String fecha, String tipoMercado) throws Exception {
-        validarTipoEmpresaMercado(tipoEmpresa);
-        validarNomeEmpresa(nome);
-        validarEnderecoEmpresa(endereco);
+        validarTipo(tipoEmpresa, "mercado");
+        validarNome(nome);
+        validarEndereco(endereco);
         validarHorario(abre, fecha);
         validarTipoMercado(tipoMercado);
-        validarUsuarioDono(dono);
-
-        for (Empresa empresa : repository.listarTodos()) {
-            if (empresa.getDonoId() == dono
-                    && Objects.equals(empresa.getNome(), nome)
-                    && Objects.equals(empresa.getEndereco(), endereco)) {
-                throw new EmpresaNomeELocalRepetidosException();
-            }
-        }
-
-        for (Empresa empresa : repository.listarTodos()) {
-            if (empresa.getDonoId() != dono && Objects.equals(empresa.getNome(), nome)) {
-                throw new EmpresaComNomeJaExisteException();
-            }
-        }
+        validarDonoECadastroDisponivel(dono, nome, endereco);
 
         int id = repository.gerarId();
         repository.salvar(new Mercado(id, nome, endereco, dono, abre, fecha, tipoMercado));
@@ -81,24 +53,10 @@ public class EmpresaService {
     }
 
     public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, boolean aberto24Horas, int numeroFuncionarios) throws Exception {
-        validarTipoEmpresaFarmacia(tipoEmpresa);
-        validarNomeEmpresa(nome);
-        validarEnderecoEmpresa(endereco);
-        validarUsuarioDono(dono);
-
-        for (Empresa empresa : repository.listarTodos()) {
-            if (empresa.getDonoId() == dono
-                    && Objects.equals(empresa.getNome(), nome)
-                    && Objects.equals(empresa.getEndereco(), endereco)) {
-                throw new EmpresaNomeELocalRepetidosException();
-            }
-        }
-
-        for (Empresa empresa : repository.listarTodos()) {
-            if (empresa.getDonoId() != dono && Objects.equals(empresa.getNome(), nome)) {
-                throw new EmpresaComNomeJaExisteException();
-            }
-        }
+        validarTipo(tipoEmpresa, "farmacia");
+        validarNome(nome);
+        validarEndereco(endereco);
+        validarDonoECadastroDisponivel(dono, nome, endereco);
 
         int id = repository.gerarId();
         repository.salvar(new Farmacia(id, nome, endereco, dono, aberto24Horas, numeroFuncionarios));
@@ -106,23 +64,14 @@ public class EmpresaService {
     }
 
     public String getEmpresasDoUsuario(int idDono) throws Exception {
-        validarUsuarioDono(idDono);
+        validarDono(idDono);
 
         List<Empresa> empresasDoDono = new ArrayList<>();
         for (Empresa empresa : repository.listarTodos()) {
             if (empresa.getDonoId() == idDono) empresasDoDono.add(empresa);
         }
 
-        if (empresasDoDono.isEmpty()) return "{[]}";
-
-        StringBuilder resultado = new StringBuilder("{[");
-        for (int i = 0; i < empresasDoDono.size(); i++) {
-            Empresa empresa = empresasDoDono.get(i);
-            resultado.append("[").append(empresa.getNome()).append(", ").append(empresa.getEndereco()).append("]");
-            if (i < empresasDoDono.size() - 1) resultado.append(", ");
-        }
-        resultado.append("]}");
-        return resultado.toString();
+        return formatarEmpresas(empresasDoDono);
     }
 
     public String getAtributoEmpresa(int empresaId, String atributo) throws Exception {
@@ -166,7 +115,7 @@ public class EmpresaService {
         if (nome == null || nome.trim().isEmpty()) throw new NomeInvalidoException();
         if (indice < 0) throw new IndiceInvalidoException();
 
-        validarUsuarioDono(idDono);
+        validarDono(idDono);
 
         List<Empresa> empresasComMesmoNome = new ArrayList<>();
         for (Empresa empresa : repository.listarTodos()) {
@@ -233,16 +182,7 @@ public class EmpresaService {
             }
         }
 
-        if (empresasDoEntregador.isEmpty()) return "{[]}";
-
-        StringBuilder resultado = new StringBuilder("{[");
-        for (int i = 0; i < empresasDoEntregador.size(); i++) {
-            Empresa empresa = empresasDoEntregador.get(i);
-            resultado.append("[").append(empresa.getNome()).append(", ").append(empresa.getEndereco()).append("]");
-            if (i < empresasDoEntregador.size() - 1) resultado.append(", ");
-        }
-        resultado.append("]}");
-        return resultado.toString();
+        return formatarEmpresas(empresasDoEntregador);
     }
 
     public boolean entregadorTrabalhaNaEmpresa(int empresaId, int entregadorId) {
@@ -261,23 +201,17 @@ public class EmpresaService {
         return repository.buscarPorId(empresaId) instanceof Farmacia;
     }
 
-    private void validarTipoEmpresaMercado(String tipoEmpresa) throws TipoEmpresaInvalidoException {
-        if (tipoEmpresa == null || tipoEmpresa.trim().isEmpty() || !tipoEmpresa.equals("mercado")) {
+    private void validarTipo(String tipo, String esperado) throws TipoEmpresaInvalidoException {
+        if (tipo == null || tipo.trim().isEmpty() || !tipo.equals(esperado)) {
             throw new TipoEmpresaInvalidoException();
         }
     }
 
-    private void validarTipoEmpresaFarmacia(String tipoEmpresa) throws TipoEmpresaInvalidoException {
-        if (tipoEmpresa == null || tipoEmpresa.trim().isEmpty() || !tipoEmpresa.equals("farmacia")) {
-            throw new TipoEmpresaInvalidoException();
-        }
-    }
-
-    private void validarNomeEmpresa(String nome) throws NomeInvalidoException {
+    private void validarNome(String nome) throws NomeInvalidoException {
         if (nome == null || nome.trim().isEmpty()) throw new NomeInvalidoException();
     }
 
-    private void validarEnderecoEmpresa(String endereco) throws EnderecoEmpresaInvalidoException {
+    private void validarEndereco(String endereco) throws EnderecoEmpresaInvalidoException {
         if (endereco == null || endereco.trim().isEmpty()) throw new EnderecoEmpresaInvalidoException();
     }
 
@@ -306,7 +240,40 @@ public class EmpresaService {
         return horas * 60 + minutos;
     }
 
-    private void validarUsuarioDono(int idUsuario) throws UsuarioNaoPodeCriarEmpresaException {
+    private void validarDono(int idUsuario) throws UsuarioNaoPodeCriarEmpresaException {
         if (!usuarioService.ehDonoDeEmpresa(idUsuario)) throw new UsuarioNaoPodeCriarEmpresaException();
+    }
+
+    private void validarDonoECadastroDisponivel(int dono, String nome, String endereco) throws Exception {
+        validarDono(dono);
+
+        boolean nomeELocalRepetidos = false;
+        boolean nomeJaExiste = false;
+
+        for (Empresa empresa : repository.listarTodos()) {
+            boolean mesmoNome = Objects.equals(empresa.getNome(), nome);
+            if (empresa.getDonoId() == dono && mesmoNome && Objects.equals(empresa.getEndereco(), endereco)) {
+                nomeELocalRepetidos = true;
+            }
+            if (empresa.getDonoId() != dono && mesmoNome) {
+                nomeJaExiste = true;
+            }
+        }
+
+        if (nomeELocalRepetidos) throw new EmpresaNomeELocalRepetidosException();
+        if (nomeJaExiste) throw new EmpresaComNomeJaExisteException();
+    }
+
+    private String formatarEmpresas(List<Empresa> empresas) {
+        if (empresas.isEmpty()) return "{[]}";
+
+        StringBuilder resultado = new StringBuilder("{[");
+        for (int i = 0; i < empresas.size(); i++) {
+            Empresa empresa = empresas.get(i);
+            resultado.append("[").append(empresa.getNome()).append(", ").append(empresa.getEndereco()).append("]");
+            if (i < empresas.size() - 1) resultado.append(", ");
+        }
+        resultado.append("]}");
+        return resultado.toString();
     }
 }

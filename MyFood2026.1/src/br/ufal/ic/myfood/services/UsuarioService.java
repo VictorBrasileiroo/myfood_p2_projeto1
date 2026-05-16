@@ -78,29 +78,7 @@ public class UsuarioService {
 
         Usuario usuario = repository.buscarPorId(idInt);
 
-        switch (atributo) {
-            case "nome":     return usuario.getNome();
-            case "email":    return usuario.getEmail();
-            case "endereco": return usuario.getEndereco();
-            case "senha":    return usuario.getSenha();
-            case "cpf":
-                if (usuario instanceof DonoDeEmpresa) {
-                    return ((DonoDeEmpresa) usuario).getCpf();
-                }
-                throw new AtributoInvalidoExc();
-            case "veiculo":
-                if (usuario instanceof Entregador) {
-                    return ((Entregador) usuario).getVeiculo();
-                }
-                throw new AtributoInvalidoExc();
-            case "placa":
-                if (usuario instanceof Entregador) {
-                    return ((Entregador) usuario).getPlaca();
-                }
-                throw new AtributoInvalidoExc();
-            default:
-                throw new AtributoInvalidoExc();
-        }
+        return usuario.getAtributo(atributo);
     }
 
     public Usuario buscarPorId(int id) throws UsuarioNaoExisteException {
@@ -109,7 +87,7 @@ public class UsuarioService {
 
     public boolean ehDonoDeEmpresa(int id) {
         try {
-            return repository.buscarPorId(id) instanceof DonoDeEmpresa;
+            return repository.buscarPorId(id).ehDonoDeEmpresa();
         } catch (UsuarioNaoExisteException e) {
             return false;
         }
@@ -117,7 +95,7 @@ public class UsuarioService {
 
     public boolean ehEntregador(int id) {
         try {
-            return repository.buscarPorId(id) instanceof Entregador;
+            return repository.buscarPorId(id).ehEntregador();
         } catch (UsuarioNaoExisteException e) {
             return false;
         }

@@ -82,33 +82,12 @@ public class EmpresaService {
 
         String attr = atributo.trim();
 
-        switch (attr) {
-            case "nome":     return empresa.getNome();
-            case "endereco": return empresa.getEndereco();
-            case "tipoCozinha":
-                if (empresa instanceof Restaurante) return ((Restaurante) empresa).getTipoCozinha();
-                throw new AtributoInvalidoExc();
-            case "abre":
-                if (empresa instanceof Mercado) return ((Mercado) empresa).getAbre();
-                throw new AtributoInvalidoExc();
-            case "fecha":
-                if (empresa instanceof Mercado) return ((Mercado) empresa).getFecha();
-                throw new AtributoInvalidoExc();
-            case "tipoMercado":
-                if (empresa instanceof Mercado) return ((Mercado) empresa).getTipoMercado();
-                throw new AtributoInvalidoExc();
-            case "aberto24Horas":
-                if (empresa instanceof Farmacia) return String.valueOf(((Farmacia) empresa).isAberto24Horas());
-                throw new AtributoInvalidoExc();
-            case "numeroFuncionarios":
-                if (empresa instanceof Farmacia) return String.valueOf(((Farmacia) empresa).getNumeroFuncionarios());
-                throw new AtributoInvalidoExc();
-            case "dono":
-                Usuario dono = usuarioService.buscarPorId(empresa.getDonoId());
-                return dono.getNome();
-            default:
-                throw new AtributoInvalidoExc();
+        if ("dono".equals(attr)) {
+            Usuario dono = usuarioService.buscarPorId(empresa.getDonoId());
+            return dono.getNome();
         }
+
+        return empresa.getAtributo(attr);
     }
 
     public int getIdEmpresa(int idDono, String nome, int indice) throws Exception {
@@ -136,13 +115,11 @@ public class EmpresaService {
 
     public void alterarFuncionamento(int mercadoId, String abre, String fecha) throws Exception {
         Empresa empresa = repository.buscarPorId(mercadoId);
-        if (!(empresa instanceof Mercado)) throw new MercadoInvalidoException();
+        if (empresa == null) throw new MercadoInvalidoException();
 
         validarHorario(abre, fecha);
 
-        Mercado mercado = (Mercado) empresa;
-        mercado.setAbre(abre);
-        mercado.setFecha(fecha);
+        empresa.alterarFuncionamento(abre, fecha);
     }
 
     public void cadastrarEntregador(int empresaId, int entregadorId) throws Exception {
@@ -198,7 +175,8 @@ public class EmpresaService {
     }
 
     public boolean ehFarmacia(int empresaId) {
-        return repository.buscarPorId(empresaId) instanceof Farmacia;
+        Empresa empresa = repository.buscarPorId(empresaId);
+        return empresa != null && empresa.ehFarmacia();
     }
 
     private void validarTipo(String tipo, String esperado) throws TipoEmpresaInvalidoException {

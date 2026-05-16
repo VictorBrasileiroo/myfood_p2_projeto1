@@ -60,7 +60,7 @@ O sistema é organizado em quatro camadas, cada uma com uma responsabilidade bem
 
 **Abstração:** as classes base definem o contrato, getTipo() é abstrato, então toda subclasse tem que implementar. Isso evita trabalhar com objetos que não sabem o que são.
 
-**Polimorfismo:** nos services, quando um atributo é só de uma subclasse, usa-se instanceof pra acessar. O resto do código trata restaurantes, mercados e farmacias como Empresa, e clientes, donos e entregadores como Usuario.
+**Polimorfismo:** atributos específicos ficam nas próprias subclasses. O service pede o atributo para Usuario ou Empresa, e cada classe responde o que sabe responder. Assim o resto do código trata restaurantes, mercados e farmacias como Empresa, e clientes, donos e entregadores como Usuario.
 
 ---
 

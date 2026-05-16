@@ -1,5 +1,7 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.AtributoInvalidoExc;
+
 public class DonoDeEmpresa extends Usuario {
     private static final long serialVersionUID = 1L;
 
@@ -18,6 +20,17 @@ public class DonoDeEmpresa extends Usuario {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    @Override
+    protected String getAtributoProprio(String atributo) throws AtributoInvalidoExc {
+        if ("cpf".equals(atributo)) return getCpf();
+        throw new AtributoInvalidoExc();
+    }
+
+    @Override
+    public boolean ehDonoDeEmpresa() {
+        return true;
     }
 
     @Override

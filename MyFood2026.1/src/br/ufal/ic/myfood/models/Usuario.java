@@ -1,5 +1,7 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.AtributoInvalidoExc;
+
 import java.io.Serializable;
 
 public abstract class Usuario implements Serializable {
@@ -59,6 +61,32 @@ public abstract class Usuario implements Serializable {
 
     public void setEndereco(String endereco) {
         this.endereco = endereco;
+    }
+
+    public String getAtributo(String atributo) throws AtributoInvalidoExc {
+        switch (atributo) {
+            case "nome": return getNome();
+            case "email": return getEmail();
+            case "endereco": return getEndereco();
+            case "senha": return getSenha();
+            default: return getAtributoProprio(atributo);
+        }
+    }
+
+    protected String getAtributoProprio(String atributo) throws AtributoInvalidoExc {
+        throw new AtributoInvalidoExc();
+    }
+
+    public boolean ehDonoDeEmpresa() {
+        return false;
+    }
+
+    public boolean ehEntregador() {
+        return false;
+    }
+
+    public boolean temPlaca(String placa) {
+        return false;
     }
 
     public abstract String getTipo();

@@ -1,5 +1,7 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.AtributoInvalidoExc;
+
 public class Restaurante extends Empresa {
     private static final long serialVersionUID = 1L;
 
@@ -19,6 +21,12 @@ public class Restaurante extends Empresa {
 
     public void setTipoCozinha(String tipoCozinha) {
         this.tipoCozinha = tipoCozinha;
+    }
+
+    @Override
+    protected String getAtributoProprio(String atributo) throws AtributoInvalidoExc {
+        if ("tipoCozinha".equals(atributo)) return getTipoCozinha();
+        throw new AtributoInvalidoExc();
     }
 
     @Override

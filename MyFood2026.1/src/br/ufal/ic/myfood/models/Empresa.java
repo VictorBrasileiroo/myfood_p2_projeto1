@@ -1,5 +1,8 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.AtributoInvalidoExc;
+import br.ufal.ic.myfood.exceptions.MercadoInvalidoException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +67,26 @@ public abstract class Empresa implements Serializable {
 
     public void setEntregadoresIds(List<Integer> entregadoresIds) {
         this.entregadoresIds = entregadoresIds;
+    }
+
+    public String getAtributo(String atributo) throws AtributoInvalidoExc {
+        switch (atributo) {
+            case "nome": return getNome();
+            case "endereco": return getEndereco();
+            default: return getAtributoProprio(atributo);
+        }
+    }
+
+    protected String getAtributoProprio(String atributo) throws AtributoInvalidoExc {
+        throw new AtributoInvalidoExc();
+    }
+
+    public void alterarFuncionamento(String abre, String fecha) throws MercadoInvalidoException {
+        throw new MercadoInvalidoException();
+    }
+
+    public boolean ehFarmacia() {
+        return false;
     }
 
     public abstract String getTipo();

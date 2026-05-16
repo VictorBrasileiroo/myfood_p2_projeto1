@@ -1,5 +1,7 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.AtributoInvalidoExc;
+
 public class Mercado extends Empresa {
     private static final long serialVersionUID = 1L;
 
@@ -39,6 +41,22 @@ public class Mercado extends Empresa {
 
     public void setTipoMercado(String tipoMercado) {
         this.tipoMercado = tipoMercado;
+    }
+
+    @Override
+    protected String getAtributoProprio(String atributo) throws AtributoInvalidoExc {
+        switch (atributo) {
+            case "abre": return getAbre();
+            case "fecha": return getFecha();
+            case "tipoMercado": return getTipoMercado();
+            default: throw new AtributoInvalidoExc();
+        }
+    }
+
+    @Override
+    public void alterarFuncionamento(String abre, String fecha) {
+        setAbre(abre);
+        setFecha(fecha);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.AtributoInvalidoExc;
+
 public class Entregador extends Usuario {
     private static final long serialVersionUID = 1L;
 
@@ -29,6 +31,25 @@ public class Entregador extends Usuario {
 
     public void setPlaca(String placa) {
         this.placa = placa;
+    }
+
+    @Override
+    protected String getAtributoProprio(String atributo) throws AtributoInvalidoExc {
+        switch (atributo) {
+            case "veiculo": return getVeiculo();
+            case "placa": return getPlaca();
+            default: throw new AtributoInvalidoExc();
+        }
+    }
+
+    @Override
+    public boolean ehEntregador() {
+        return true;
+    }
+
+    @Override
+    public boolean temPlaca(String placa) {
+        return getPlaca() != null && getPlaca().equals(placa);
     }
 
     @Override

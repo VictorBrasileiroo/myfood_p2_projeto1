@@ -11,6 +11,8 @@ import br.ufal.ic.myfood.services.PedidoService;
 import br.ufal.ic.myfood.services.ProdutoService;
 import br.ufal.ic.myfood.services.UsuarioService;
 
+import java.io.IOException;
+
 public class Facade {
 
     private UsuarioService usuarioService;
@@ -35,11 +37,31 @@ public class Facade {
         EntregaRepository entregaRepo = new EntregaRepository();
         this.entregaService = new EntregaService(entregaRepo, this.pedidoService, this.usuarioService, this.empresaService, this.produtoService);
 
-        try { usuarioRepo.carregarDados(); } catch (Exception e) {}
-        try { empresaRepo.carregarDados(); } catch (Exception e) {}
-        try { produtoRepo.carregarDados(); } catch (Exception e) {}
-        try { pedidoRepo.carregarDados(); } catch (Exception e) {}
-        try { entregaRepo.carregarDados(); } catch (Exception e) {}
+        try { 
+            usuarioRepo.carregarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao carregar dados de usuarios: " + e.getMessage()); 
+        }
+        try { 
+            empresaRepo.carregarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao carregar dados de empresas: " + e.getMessage()); 
+        }
+        try { 
+            produtoRepo.carregarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao carregar dados de produtos: " + e.getMessage()); 
+        }
+        try { 
+            pedidoRepo.carregarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao carregar dados de pedidos: " + e.getMessage()); 
+        }
+        try { 
+            entregaRepo.carregarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao carregar dados de entregas: " + e.getMessage()); 
+        }
     }
 
     public void zerarSistema() {
@@ -60,11 +82,31 @@ public class Facade {
     }
 
     public void encerrarSistema() {
-        try { usuarioService.salvarDados(); } catch (Exception e) {}
-        try { empresaService.salvarDados(); } catch (Exception e) {}
-        try { produtoService.salvarDados(); } catch (Exception e) {}
-        try { pedidoService.salvarDados(); } catch (Exception e) {}
-        try { entregaService.salvarDados(); } catch (Exception e) {}
+        try { 
+            usuarioService.salvarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao salvar dados de usuarios: " + e.getMessage()); 
+        }
+        try { 
+            empresaService.salvarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao salvar dados de empresas: " + e.getMessage()); 
+        }
+        try { 
+            produtoService.salvarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao salvar dados de produtos: " + e.getMessage()); 
+        }
+        try { 
+            pedidoService.salvarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao salvar dados de pedidos: " + e.getMessage()); 
+        }
+        try { 
+            entregaService.salvarDados(); 
+        } catch (IOException e) { 
+            System.out.println("Erro ao salvar dados de entregas: " + e.getMessage()); 
+        }
     }
 
     public void criarUsuario(String nome, String email, String senha, String endereco) throws Exception {
